@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-2xl font-semibold text-gray-800">Admin Panel</h2>
+        <p class="text-gray-600 mt-2">Manage users, monitor usage, and track billing</p>
+    </div>
+    
+    <!-- User Management -->
+    <div class="bg-white p-6 rounded-lg shadow">
+        <h3 class="text-xl font-semibold mb-4 text-gray-800">Users</h3>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">API Key</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tier</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usage</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for user in users %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{{ user[1][:20] }}...</code>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+                                       {% if user[2] == 'starter' %}bg-green-100 text-green-800{% endif %}
+                                       {% if user[2] == 'pro' %}bg-blue-100 text-blue-800{% endif %}
+                                       {% if user[2] == 'enterprise' %}bg-purple-100 text-purple-800{% endif %}">
+                                {{ user[2] }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ "{:,}".format(user[4]) }} / {{ "{:,}".format(user[3]) }}
+                            <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                <div class="bg-blue-600 h-1.5 rounded-full" style="width: {{ (user[4] / user[3] * 100) if user[3] > 0 else 0 }}%"></div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ user[5][:10] }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if user[4] < user[3] %}
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                            {% else %}
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Quota Exceeded</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Usage Analytics -->
+    <div class="bg-white p-6 rounded-lg shadow">
+        <h3 class="text-xl font-semibold mb-4 text-gray-800">Recent Usage</h3>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Model</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tokens</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cost</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for log in usage %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{{ log[0][-8:] }}</code>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+                                       {% if 'gpt-4' in log[1] %}bg-purple-100 text-purple-800{% endif %}
+                                       {% if 'gpt-3.5' in log[1] %}bg-blue-100 text-blue-800{% endif %}
+                                       {% if 'claude' in log[1] %}bg-green-100 text-green-800{% endif %}">
+                                {{ log[1] }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ "{:,}".format(log[2]) }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            ${{ "%.6f"|format(log[3]) }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ log[4][11:19] }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow text-center">
+            <div class="text-3xl font-bold text-blue-600">{{ users|length }}</div>
+            <div class="text-sm text-gray-600">Total Users</div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow text-center">
+            <div class="text-3xl font-bold text-green-600">{{ usage|length }}</div>
+            <div class="text-sm text-gray-600">API Calls Today</div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow text-center">
+            <div class="text-3xl font-bold text-purple-600">
+                ${{ "%.2f"|format(usage|map(attribute=3)|sum) }}
+            </div>
+            <div class="text-sm text-gray-600">Revenue Today</div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow text-center">
+            <div class="text-3xl font-bold text-orange-600">
+                {{ "{:,}".format(usage|map(attribute=2)|sum) }}
+            </div>
+            <div class="text-sm text-gray-600">Tokens Processed</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

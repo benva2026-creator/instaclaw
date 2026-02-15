@@ -1,0 +1,562 @@
+{% extends "base.html" %}
+
+{% block title %}API Documentation{% endblock %}
+{% block header_title %}API Documentation{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+    .code-block {
+        background: #0d1117 !important;
+        border: 1px solid #3e3e3e;
+    }
+    .method-tag {
+        font-family: monospace;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header Section -->
+    <div class="bg-gradient-to-r from-spotify-green to-spotify-green-hover rounded-2xl p-8 text-white">
+        <div class="max-w-3xl">
+            <h1 class="text-3xl font-bold mb-4">InstaClaw API Documentation</h1>
+            <p class="text-green-100 text-lg mb-6">
+                Access the world's most advanced AI models through a single, unified REST API. 
+                Our platform provides seamless integration with OpenAI, Anthropic, and other leading AI providers.
+            </p>
+            <div class="flex flex-wrap gap-4">
+                <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                    <i class="fas fa-shield-alt mr-2"></i>
+                    Enterprise Security
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                    <i class="fas fa-chart-line mr-2"></i>
+                    Real-time Analytics
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                    <i class="fas fa-dollar-sign mr-2"></i>
+                    Transparent Pricing
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                    <i class="fas fa-clock mr-2"></i>
+                    99.9% Uptime
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Start -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-spotify-dark rounded-2xl p-6">
+            <h2 class="text-xl font-semibold text-spotify-text mb-4">Quick Start</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <h4 class="text-spotify-text font-medium mb-2">1. Get your API key</h4>
+                    <p class="text-spotify-text-gray text-sm mb-3">
+                        Sign up for an account and copy your API key from the dashboard.
+                    </p>
+                    <div class="bg-spotify-black rounded-lg p-4 border border-spotify-gray">
+                        <code class="text-spotify-green text-sm">X-API-Key: your_api_key_here</code>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-spotify-text font-medium mb-2">2. Make your first request</h4>
+                    <p class="text-spotify-text-gray text-sm mb-3">
+                        Send a POST request to our chat endpoint with your prompt.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-spotify-text font-medium mb-2">3. Process the response</h4>
+                    <p class="text-spotify-text-gray text-sm">
+                        Get back JSON with the AI response, token usage, and cost information.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <a href="/test" class="inline-flex items-center bg-spotify-green hover:bg-spotify-green-hover text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                    <i class="fas fa-play mr-2"></i>
+                    Try it now
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-spotify-dark rounded-2xl p-6">
+            <h2 class="text-xl font-semibold text-spotify-text mb-4">Example Request</h2>
+            
+            <pre class="code-block rounded-lg p-4 overflow-x-auto text-sm"><code class="language-bash">curl -X POST {{ request.url_root }}api/chat \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: sk_your_api_key_here" \
+  -d '{
+    "prompt": "Explain quantum computing in simple terms",
+    "model": "gpt-3.5-turbo",
+    "provider": "openai"
+  }'</code></pre>
+
+            <h3 class="text-spotify-text font-medium mt-4 mb-2">Response</h3>
+            <pre class="code-block rounded-lg p-4 overflow-x-auto text-sm"><code class="language-json">{
+  "response": "Quantum computing is a type of computing...",
+  "model_used": "gpt-3.5-turbo",
+  "provider": "openai",
+  "tokens_used": 150,
+  "cost": 0.0003,
+  "response_time": 0.85,
+  "total_tokens_used": 15150,
+  "remaining_quota": 84850,
+  "quota_percentage": 15.15
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- API Endpoints -->
+    <div class="bg-spotify-dark rounded-2xl p-6">
+        <h2 class="text-2xl font-semibold text-spotify-text mb-6">API Endpoints</h2>
+
+        <!-- Chat Completion -->
+        <div class="border border-spotify-gray rounded-xl p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                    <span class="method-tag px-3 py-1 bg-spotify-green text-white rounded text-sm">POST</span>
+                    <code class="text-spotify-text font-mono text-lg">/api/chat</code>
+                </div>
+                <div class="text-sm text-spotify-text-gray">Generate text completion</div>
+            </div>
+
+            <p class="text-spotify-text-gray mb-4">
+                Generate text completions using various AI models. Supports OpenAI GPT models, Anthropic Claude models, and automatic model selection.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-spotify-text font-medium mb-3">Request Parameters</h4>
+                    <div class="space-y-3">
+                        <div class="bg-spotify-gray rounded-lg p-3">
+                            <div class="flex justify-between items-start mb-1">
+                                <code class="text-spotify-green">prompt</code>
+                                <span class="text-xs bg-red-600 text-white px-2 py-1 rounded">required</span>
+                            </div>
+                            <div class="text-sm text-spotify-text-gray">The input text to generate completion for</div>
+                            <div class="text-xs text-spotify-text-gray mt-1">Type: string</div>
+                        </div>
+
+                        <div class="bg-spotify-gray rounded-lg p-3">
+                            <div class="flex justify-between items-start mb-1">
+                                <code class="text-spotify-green">model</code>
+                                <span class="text-xs bg-spotify-light-gray text-spotify-text px-2 py-1 rounded">optional</span>
+                            </div>
+                            <div class="text-sm text-spotify-text-gray">Specific model to use (default: "auto")</div>
+                            <div class="text-xs text-spotify-text-gray mt-1">
+                                Options: "auto", "gpt-3.5-turbo", "gpt-4", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"
+                            </div>
+                        </div>
+
+                        <div class="bg-spotify-gray rounded-lg p-3">
+                            <div class="flex justify-between items-start mb-1">
+                                <code class="text-spotify-green">provider</code>
+                                <span class="text-xs bg-spotify-light-gray text-spotify-text px-2 py-1 rounded">optional</span>
+                            </div>
+                            <div class="text-sm text-spotify-text-gray">AI provider to use (default: "auto")</div>
+                            <div class="text-xs text-spotify-text-gray mt-1">
+                                Options: "auto", "openai", "anthropic"
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-spotify-text font-medium mb-3">Response Fields</h4>
+                    <div class="space-y-3">
+                        <div class="bg-spotify-gray rounded-lg p-3">
+                            <code class="text-spotify-green text-sm">response</code>
+                            <div class="text-sm text-spotify-text-gray mt-1">The generated text completion</div>
+                        </div>
+
+                        <div class="bg-spotify-gray rounded-lg p-3">
+                            <code class="text-spotify-green text-sm">model_used</code>
+                            <div class="text-sm text-spotify-text-gray mt-1">The AI model that processed the request</div>
+                        </div>
+
+                        <div class="bg-spotify-gray rounded-lg p-3">
+                            <code class="text-spotify-green text-sm">tokens_used</code>
+                            <div class="text-sm text-spotify-text-gray mt-1">Number of tokens consumed for this request</div>
+                        </div>
+
+                        <div class="bg-spotify-gray rounded-lg p-3">
+                            <code class="text-spotify-green text-sm">cost</code>
+                            <div class="text-sm text-spotify-text-gray mt-1">Cost of this request in USD</div>
+                        </div>
+
+                        <div class="bg-spotify-gray rounded-lg p-3">
+                            <code class="text-spotify-green text-sm">remaining_quota</code>
+                            <div class="text-sm text-spotify-text-gray mt-1">Remaining tokens in your monthly quota</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Examples -->
+            <div class="mt-6">
+                <h4 class="text-spotify-text font-medium mb-3">Code Examples</h4>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <!-- Python -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-spotify-text">Python</span>
+                            <button onclick="copyCode('python-example')" class="text-xs text-spotify-green hover:text-spotify-green-hover">
+                                <i class="fas fa-copy mr-1"></i>Copy
+                            </button>
+                        </div>
+                        <pre class="code-block rounded-lg p-4 text-sm overflow-x-auto"><code id="python-example" class="language-python">import requests
+
+url = "{{ request.url_root }}api/chat"
+headers = {
+    "Content-Type": "application/json",
+    "X-API-Key": "your_api_key_here"
+}
+data = {
+    "prompt": "Write a haiku about programming",
+    "model": "gpt-3.5-turbo"
+}
+
+response = requests.post(url, headers=headers, json=data)
+result = response.json()
+print(result['response'])</code></pre>
+                    </div>
+
+                    <!-- JavaScript -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-spotify-text">JavaScript</span>
+                            <button onclick="copyCode('js-example')" class="text-xs text-spotify-green hover:text-spotify-green-hover">
+                                <i class="fas fa-copy mr-1"></i>Copy
+                            </button>
+                        </div>
+                        <pre class="code-block rounded-lg p-4 text-sm overflow-x-auto"><code id="js-example" class="language-javascript">const response = await fetch('{{ request.url_root }}api/chat', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-API-Key': 'your_api_key_here'
+  },
+  body: JSON.stringify({
+    prompt: 'Write a haiku about programming',
+    model: 'gpt-3.5-turbo'
+  })
+});
+
+const result = await response.json();
+console.log(result.response);</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Check -->
+        <div class="border border-spotify-gray rounded-xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                    <span class="method-tag px-3 py-1 bg-blue-600 text-white rounded text-sm">GET</span>
+                    <code class="text-spotify-text font-mono text-lg">/health</code>
+                </div>
+                <div class="text-sm text-spotify-text-gray">Service health check</div>
+            </div>
+
+            <p class="text-spotify-text-gray mb-4">
+                Check the health and status of the InstaClaw service. This endpoint doesn't require authentication.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-spotify-text font-medium mb-3">Example Request</h4>
+                    <pre class="code-block rounded-lg p-4 text-sm"><code class="language-bash">curl {{ request.url_root }}health</code></pre>
+                </div>
+
+                <div>
+                    <h4 class="text-spotify-text font-medium mb-3">Example Response</h4>
+                    <pre class="code-block rounded-lg p-4 text-sm"><code class="language-json">{
+  "status": "healthy",
+  "timestamp": "2024-02-15T17:30:00Z",
+  "version": "1.0.0"
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentication -->
+    <div class="bg-spotify-dark rounded-2xl p-6">
+        <h2 class="text-2xl font-semibold text-spotify-text mb-6">Authentication</h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+                <p class="text-spotify-text-gray mb-4">
+                    InstaClaw uses API keys for authentication. Include your API key in the request header:
+                </p>
+
+                <pre class="code-block rounded-lg p-4 text-sm mb-4"><code>X-API-Key: your_api_key_here</code></pre>
+
+                <div class="bg-spotify-gray rounded-lg p-4">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-info-circle text-spotify-green mr-2"></i>
+                        <span class="text-spotify-text font-medium">Getting Your API Key</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray">
+                        You can find your API key in your dashboard after signing up. 
+                        Keep it secure and never share it publicly.
+                    </p>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-spotify-text font-medium mb-3">Error Responses</h4>
+                <div class="space-y-3">
+                    <div class="bg-spotify-gray rounded-lg p-3">
+                        <div class="flex items-center justify-between mb-1">
+                            <code class="text-red-400">401 Unauthorized</code>
+                        </div>
+                        <div class="text-sm text-spotify-text-gray">Missing or invalid API key</div>
+                    </div>
+
+                    <div class="bg-spotify-gray rounded-lg p-3">
+                        <div class="flex items-center justify-between mb-1">
+                            <code class="text-yellow-400">429 Too Many Requests</code>
+                        </div>
+                        <div class="text-sm text-spotify-text-gray">Rate limit exceeded or quota exhausted</div>
+                    </div>
+
+                    <div class="bg-spotify-gray rounded-lg p-3">
+                        <div class="flex items-center justify-between mb-1">
+                            <code class="text-red-400">400 Bad Request</code>
+                        </div>
+                        <div class="text-sm text-spotify-text-gray">Invalid request parameters</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rate Limits -->
+    <div class="bg-spotify-dark rounded-2xl p-6">
+        <h2 class="text-2xl font-semibold text-spotify-text mb-6">Rate Limits & Quotas</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-spotify-gray rounded-xl p-4">
+                <h3 class="text-lg font-semibold text-spotify-text mb-2">Free</h3>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-spotify-text-gray">Rate Limit:</span>
+                        <span class="text-spotify-text">100/hour</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-spotify-text-gray">Monthly Quota:</span>
+                        <span class="text-spotify-text">10,000 tokens</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-spotify-gray rounded-xl p-4">
+                <h3 class="text-lg font-semibold text-spotify-text mb-2">Starter</h3>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-spotify-text-gray">Rate Limit:</span>
+                        <span class="text-spotify-text">1,000/hour</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-spotify-text-gray">Monthly Quota:</span>
+                        <span class="text-spotify-text">100,000 tokens</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-spotify-gray rounded-xl p-4">
+                <h3 class="text-lg font-semibold text-spotify-text mb-2">Pro</h3>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-spotify-text-gray">Rate Limit:</span>
+                        <span class="text-spotify-text">5,000/hour</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-spotify-text-gray">Monthly Quota:</span>
+                        <span class="text-spotify-text">1M tokens</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-spotify-gray rounded-xl p-4">
+                <h3 class="text-lg font-semibold text-spotify-text mb-2">Enterprise</h3>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-spotify-text-gray">Rate Limit:</span>
+                        <span class="text-spotify-text">20,000/hour</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-spotify-text-gray">Monthly Quota:</span>
+                        <span class="text-spotify-text">10M tokens</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 bg-spotify-gray rounded-lg p-4">
+            <div class="flex items-center mb-2">
+                <i class="fas fa-lightbulb text-yellow-400 mr-2"></i>
+                <span class="text-spotify-text font-medium">Rate Limit Headers</span>
+            </div>
+            <p class="text-sm text-spotify-text-gray mb-3">
+                Every API response includes headers with your current rate limit status:
+            </p>
+            <pre class="code-block rounded-lg p-3 text-xs"><code>X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 995
+X-RateLimit-Reset: 1644249600
+X-Quota-Used: 15000
+X-Quota-Remaining: 85000</code></pre>
+        </div>
+    </div>
+
+    <!-- SDKs and Tools -->
+    <div class="bg-spotify-dark rounded-2xl p-6">
+        <h2 class="text-2xl font-semibold text-spotify-text mb-6">SDKs & Tools</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-spotify-gray rounded-xl p-6 text-center">
+                <i class="fab fa-python text-3xl text-spotify-green mb-4"></i>
+                <h3 class="text-lg font-semibold text-spotify-text mb-2">Python SDK</h3>
+                <p class="text-sm text-spotify-text-gray mb-4">
+                    Official Python SDK with async support and automatic retries.
+                </p>
+                <button onclick="comingSoon('Python SDK')" class="bg-spotify-green hover:bg-spotify-green-hover text-white px-4 py-2 rounded-lg text-sm transition-colors duration-200">
+                    Coming Soon
+                </button>
+            </div>
+
+            <div class="bg-spotify-gray rounded-xl p-6 text-center">
+                <i class="fab fa-js-square text-3xl text-spotify-green mb-4"></i>
+                <h3 class="text-lg font-semibold text-spotify-text mb-2">Node.js SDK</h3>
+                <p class="text-sm text-spotify-text-gray mb-4">
+                    TypeScript-ready SDK for Node.js and browser environments.
+                </p>
+                <button onclick="comingSoon('Node.js SDK')" class="bg-spotify-green hover:bg-spotify-green-hover text-white px-4 py-2 rounded-lg text-sm transition-colors duration-200">
+                    Coming Soon
+                </button>
+            </div>
+
+            <div class="bg-spotify-gray rounded-xl p-6 text-center">
+                <i class="fas fa-terminal text-3xl text-spotify-green mb-4"></i>
+                <h3 class="text-lg font-semibold text-spotify-text mb-2">CLI Tool</h3>
+                <p class="text-sm text-spotify-text-gray mb-4">
+                    Command-line interface for testing and automation scripts.
+                </p>
+                <button onclick="comingSoon('CLI Tool')" class="bg-spotify-green hover:bg-spotify-green-hover text-white px-4 py-2 rounded-lg text-sm transition-colors duration-200">
+                    Coming Soon
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support -->
+    <div class="bg-spotify-dark rounded-2xl p-6">
+        <h2 class="text-2xl font-semibold text-spotify-text mb-6">Support & Resources</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h3 class="text-lg font-semibold text-spotify-text mb-4">Need Help?</h3>
+                <div class="space-y-3">
+                    <a href="#" class="flex items-center space-x-3 text-spotify-text hover:text-spotify-green p-3 bg-spotify-gray hover:bg-spotify-light-gray rounded-lg transition-colors duration-200">
+                        <i class="fas fa-book"></i>
+                        <div>
+                            <div class="font-medium">Tutorial & Guides</div>
+                            <div class="text-sm text-spotify-text-gray">Step-by-step integration guides</div>
+                        </div>
+                    </a>
+                    
+                    <a href="#" class="flex items-center space-x-3 text-spotify-text hover:text-spotify-green p-3 bg-spotify-gray hover:bg-spotify-light-gray rounded-lg transition-colors duration-200">
+                        <i class="fas fa-comments"></i>
+                        <div>
+                            <div class="font-medium">Community Forum</div>
+                            <div class="text-sm text-spotify-text-gray">Ask questions and share ideas</div>
+                        </div>
+                    </a>
+                    
+                    <a href="#" class="flex items-center space-x-3 text-spotify-text hover:text-spotify-green p-3 bg-spotify-gray hover:bg-spotify-light-gray rounded-lg transition-colors duration-200">
+                        <i class="fas fa-headset"></i>
+                        <div>
+                            <div class="font-medium">Support Tickets</div>
+                            <div class="text-sm text-spotify-text-gray">Get personalized help</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="text-lg font-semibold text-spotify-text mb-4">API Status</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-3 bg-spotify-gray rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <span class="text-spotify-text">API Gateway</span>
+                        </div>
+                        <span class="text-green-400 text-sm">Operational</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-3 bg-spotify-gray rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <span class="text-spotify-text">OpenAI Models</span>
+                        </div>
+                        <span class="text-green-400 text-sm">Operational</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-3 bg-spotify-gray rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <span class="text-spotify-text">Anthropic Models</span>
+                        </div>
+                        <span class="text-green-400 text-sm">Operational</span>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="#" class="text-spotify-green hover:text-spotify-green-hover text-sm">
+                        View Status Page <i class="fas fa-external-link-alt ml-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize syntax highlighting
+    hljs.highlightAll();
+
+    function copyCode(elementId) {
+        const element = document.getElementById(elementId);
+        const text = element.textContent;
+        
+        navigator.clipboard.writeText(text).then(() => {
+            showNotification('Code copied to clipboard!');
+        }).catch(() => {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showNotification('Code copied to clipboard!');
+        });
+    }
+
+    function comingSoon(feature) {
+        showNotification(`${feature} is coming soon! We'll notify you when it's available.`, 'info');
+    }
+</script>
+{% endblock %}

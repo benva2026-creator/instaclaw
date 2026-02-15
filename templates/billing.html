@@ -1,0 +1,501 @@
+{% extends "base.html" %}
+
+{% block title %}Billing & Subscription{% endblock %}
+{% block header_title %}Billing & Subscription{% endblock %}
+
+{% block extra_head %}
+<script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Current Subscription Status -->
+    <div class="bg-spotify-dark rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-spotify-text mb-2">Current Subscription</h2>
+                <p class="text-spotify-text-gray">Manage your subscription and billing preferences</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span class="px-4 py-2 bg-spotify-green text-white rounded-full text-sm font-medium">
+                    <i class="fas fa-check-circle mr-2"></i>Active
+                </span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Current Plan Details -->
+            <div class="lg:col-span-2">
+                <div class="bg-spotify-gray rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold text-spotify-text">
+                            {{ user_data[0]|title if user_data else "Starter" }} Plan
+                        </h3>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-spotify-green">
+                                ${{ subscription_tiers[user_data[0]]['price_per_month'] if user_data and user_data[0] in subscription_tiers else "9.99" }}/mo
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <div class="text-spotify-text-gray mb-1">Monthly Tokens</div>
+                            <div class="text-spotify-text font-medium">
+                                {{ "{:,}".format(user_data[2]) if user_data else "100,000" }} tokens
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-spotify-text-gray mb-1">Rate Limit</div>
+                            <div class="text-spotify-text font-medium">
+                                {{ subscription_tiers[user_data[0]]['rate_limit'] if user_data and user_data[0] in subscription_tiers else "1,000/hour" }}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-spotify-text-gray mb-1">Used This Month</div>
+                            <div class="text-spotify-text font-medium">
+                                {{ "{:,}".format(user_data[3]) if user_data else "15,000" }} tokens
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-spotify-text-gray mb-1">Next Billing</div>
+                            <div class="text-spotify-text font-medium">
+                                {{ user_data[4].split('T')[0] if user_data and user_data[4] else "2024-03-15" }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Usage Progress -->
+                    <div class="mt-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-spotify-text-gray">Token Usage</span>
+                            <span class="text-sm text-spotify-text">
+                                {{ ((user_data[3] / user_data[2]) * 100)|round|int if user_data else 15 }}%
+                            </span>
+                        </div>
+                        <div class="w-full bg-spotify-light-gray rounded-full h-3">
+                            <div class="bg-spotify-green rounded-full h-3 transition-all duration-500" 
+                                 style="width: {{ ((user_data[3] / user_data[2]) * 100)|round|int if user_data else 15 }}%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-spotify-text-gray mt-2">
+                            <span>{{ "{:,}".format(user_data[3]) if user_data else "15,000" }} used</span>
+                            <span>{{ "{:,}".format(user_data[2] - user_data[3]) if user_data else "85,000" }} remaining</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="space-y-4">
+                <button onclick="downloadInvoice()" class="w-full bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-3 px-4 rounded-lg transition-colors duration-200">
+                    <i class="fas fa-download mr-2"></i>
+                    Download Invoice
+                </button>
+                
+                <button onclick="managePaymentMethod()" class="w-full bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-3 px-4 rounded-lg transition-colors duration-200">
+                    <i class="fas fa-credit-card mr-2"></i>
+                    Payment Method
+                </button>
+                
+                <button onclick="viewUsageHistory()" class="w-full bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-3 px-4 rounded-lg transition-colors duration-200">
+                    <i class="fas fa-history mr-2"></i>
+                    Usage History
+                </button>
+                
+                <button onclick="cancelSubscription()" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg transition-colors duration-200">
+                    <i class="fas fa-times mr-2"></i>
+                    Cancel Subscription
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subscription Plans -->
+    <div class="bg-spotify-dark rounded-2xl p-6">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold text-spotify-text mb-2">Choose Your Plan</h2>
+            <p class="text-spotify-text-gray">Select the plan that best fits your needs</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for tier_name, tier_data in subscription_tiers.items() %}
+            <div class="relative bg-spotify-gray rounded-xl p-6 card-hover {% if user_data and user_data[0] == tier_name %}ring-2 ring-spotify-green{% endif %}">
+                <!-- Popular Badge for Pro -->
+                {% if tier_name == 'pro' %}
+                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <span class="bg-spotify-green text-white px-4 py-1 rounded-full text-sm font-medium">
+                        Most Popular
+                    </span>
+                </div>
+                {% endif %}
+
+                <div class="text-center">
+                    <h3 class="text-lg font-semibold text-spotify-text mb-2 capitalize">
+                        {{ tier_name }}
+                    </h3>
+                    
+                    <div class="mb-4">
+                        <span class="text-3xl font-bold text-spotify-green">
+                            {% if tier_data.price_per_month == 0 %}
+                                Free
+                            {% else %}
+                                ${{ tier_data.price_per_month }}
+                            {% endif %}
+                        </span>
+                        {% if tier_data.price_per_month > 0 %}
+                        <span class="text-spotify-text-gray text-sm">/month</span>
+                        {% endif %}
+                    </div>
+
+                    <ul class="space-y-3 text-sm text-spotify-text mb-6">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-spotify-green mr-2"></i>
+                            {{ "{:,}".format(tier_data.tokens_per_month) }} tokens/month
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-spotify-green mr-2"></i>
+                            {{ tier_data.rate_limit }}
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-spotify-green mr-2"></i>
+                            All AI models
+                        </li>
+                        {% if tier_name != 'free' %}
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-spotify-green mr-2"></i>
+                            Priority support
+                        </li>
+                        {% endif %}
+                        {% if tier_name == 'enterprise' %}
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-spotify-green mr-2"></i>
+                            Custom integrations
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-spotify-green mr-2"></i>
+                            Dedicated account manager
+                        </li>
+                        {% endif %}
+                    </ul>
+
+                    {% if user_data and user_data[0] == tier_name %}
+                    <button disabled class="w-full bg-spotify-light-gray text-spotify-text-gray py-3 px-4 rounded-lg cursor-not-allowed">
+                        <i class="fas fa-check mr-2"></i>
+                        Current Plan
+                    </button>
+                    {% elif tier_data.price_per_month == 0 %}
+                    <button onclick="changePlan('{{ tier_name }}')" class="w-full bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-3 px-4 rounded-lg transition-colors duration-200">
+                        Downgrade to Free
+                    </button>
+                    {% else %}
+                    <button onclick="changePlan('{{ tier_name }}')" class="w-full bg-spotify-green hover:bg-spotify-green-hover text-white py-3 px-4 rounded-lg transition-colors duration-200">
+                        {% if user_data and subscription_tiers[user_data[0]]['price_per_month'] < tier_data.price_per_month %}
+                            Upgrade Now
+                        {% else %}
+                            Select Plan
+                        {% endif %}
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Enterprise Contact -->
+        <div class="mt-8 text-center">
+            <div class="bg-spotify-gray rounded-xl p-6 max-w-2xl mx-auto">
+                <h3 class="text-xl font-semibold text-spotify-text mb-2">Need something custom?</h3>
+                <p class="text-spotify-text-gray mb-4">
+                    Contact our sales team for enterprise solutions, custom pricing, and dedicated support.
+                </p>
+                <button onclick="contactSales()" class="bg-spotify-green hover:bg-spotify-green-hover text-white px-6 py-3 rounded-lg transition-colors duration-200">
+                    <i class="fas fa-phone mr-2"></i>
+                    Contact Sales
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Billing History -->
+    <div class="bg-spotify-dark rounded-2xl p-6">
+        <h3 class="text-xl font-semibold text-spotify-text mb-4">Recent Invoices</h3>
+        
+        <div class="overflow-hidden">
+            <table class="w-full">
+                <thead>
+                    <tr class="text-left text-spotify-text-gray text-sm">
+                        <th class="pb-3">Date</th>
+                        <th class="pb-3">Plan</th>
+                        <th class="pb-3">Amount</th>
+                        <th class="pb-3">Status</th>
+                        <th class="pb-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="space-y-2">
+                    <tr class="text-spotify-text">
+                        <td class="py-3">Feb 15, 2024</td>
+                        <td class="py-3">{{ user_data[0]|title if user_data else "Starter" }}</td>
+                        <td class="py-3">${{ subscription_tiers[user_data[0]]['price_per_month'] if user_data and user_data[0] in subscription_tiers else "9.99" }}</td>
+                        <td class="py-3">
+                            <span class="px-3 py-1 bg-spotify-green bg-opacity-20 text-spotify-green rounded-full text-sm">
+                                Paid
+                            </span>
+                        </td>
+                        <td class="py-3">
+                            <button onclick="downloadInvoice('inv_123')" class="text-spotify-green hover:text-spotify-green-hover text-sm">
+                                <i class="fas fa-download mr-1"></i>Download
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="text-spotify-text">
+                        <td class="py-3">Jan 15, 2024</td>
+                        <td class="py-3">{{ user_data[0]|title if user_data else "Starter" }}</td>
+                        <td class="py-3">${{ subscription_tiers[user_data[0]]['price_per_month'] if user_data and user_data[0] in subscription_tiers else "9.99" }}</td>
+                        <td class="py-3">
+                            <span class="px-3 py-1 bg-spotify-green bg-opacity-20 text-spotify-green rounded-full text-sm">
+                                Paid
+                            </span>
+                        </td>
+                        <td class="py-3">
+                            <button onclick="downloadInvoice('inv_122')" class="text-spotify-green hover:text-spotify-green-hover text-sm">
+                                <i class="fas fa-download mr-1"></i>Download
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-6 text-center">
+            <button onclick="viewAllInvoices()" class="text-spotify-green hover:text-spotify-green-hover">
+                View All Invoices <i class="fas fa-arrow-right ml-1"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Payment Method -->
+    <div class="bg-spotify-dark rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-semibold text-spotify-text">Payment Method</h3>
+            <button onclick="updatePaymentMethod()" class="bg-spotify-green hover:bg-spotify-green-hover text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                <i class="fas fa-plus mr-2"></i>
+                Add New
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Current Payment Method -->
+            <div class="bg-spotify-gray rounded-lg p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+                            <i class="fab fa-cc-visa text-white"></i>
+                        </div>
+                        <div>
+                            <div class="text-spotify-text font-medium">•••• •••• •••• 4242</div>
+                            <div class="text-spotify-text-gray text-sm">Expires 12/25</div>
+                        </div>
+                    </div>
+                    <span class="px-2 py-1 bg-spotify-green bg-opacity-20 text-spotify-green text-sm rounded">
+                        Default
+                    </span>
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="editPaymentMethod()" class="flex-1 bg-spotify-light-gray hover:bg-spotify-gray text-spotify-text py-2 px-3 rounded text-sm transition-colors duration-200">
+                        Edit
+                    </button>
+                    <button onclick="removePaymentMethod()" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-3 rounded text-sm transition-colors duration-200">
+                        Remove
+                    </button>
+                </div>
+            </div>
+
+            <!-- Billing Address -->
+            <div class="bg-spotify-gray rounded-lg p-4">
+                <h4 class="text-spotify-text font-medium mb-3">Billing Address</h4>
+                <div class="text-sm text-spotify-text-gray space-y-1">
+                    <div>John Doe</div>
+                    <div>123 Main Street</div>
+                    <div>San Francisco, CA 94105</div>
+                    <div>United States</div>
+                </div>
+                <button onclick="updateBillingAddress()" class="mt-3 w-full bg-spotify-light-gray hover:bg-spotify-gray text-spotify-text py-2 px-3 rounded text-sm transition-colors duration-200">
+                    Update Address
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stripe Payment Modal -->
+<div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
+    <div class="bg-spotify-dark rounded-2xl p-6 w-full max-w-md mx-4">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-semibold text-spotify-text">Subscribe to <span id="modalPlanName">Pro</span></h3>
+            <button onclick="closePaymentModal()" class="text-spotify-text-gray hover:text-spotify-text">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <div class="mb-6">
+            <div class="bg-spotify-gray rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-spotify-green" id="modalPrice">$49.99/month</div>
+                <div class="text-spotify-text-gray text-sm mt-1">Billed monthly</div>
+            </div>
+        </div>
+
+        <form id="payment-form">
+            <div id="card-element" class="bg-spotify-gray p-4 rounded-lg mb-4">
+                <!-- Stripe Elements will create form elements here -->
+            </div>
+            
+            <div id="card-errors" role="alert" class="text-red-400 text-sm mb-4"></div>
+            
+            <button type="submit" id="submit-payment" class="w-full bg-spotify-green hover:bg-spotify-green-hover text-white py-3 px-4 rounded-lg font-medium transition-colors duration-200">
+                <span id="button-text">
+                    <i class="fas fa-lock mr-2"></i>
+                    Subscribe Now
+                </span>
+                <div id="spinner" class="hidden">
+                    <i class="fas fa-spinner fa-spin mr-2"></i>
+                    Processing...
+                </div>
+            </button>
+        </form>
+        
+        <div class="mt-4 text-center text-xs text-spotify-text-gray">
+            <i class="fas fa-shield-alt mr-1"></i>
+            Secured by Stripe • Cancel anytime
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const stripe = Stripe('{{ stripe_pk }}');
+    const elements = stripe.elements();
+    let currentPlan = null;
+
+    // Create card element
+    const cardElement = elements.create('card', {
+        style: {
+            base: {
+                color: '#ffffff',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#b3b3b3',
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        }
+    });
+
+    function changePlan(planName) {
+        currentPlan = planName;
+        document.getElementById('modalPlanName').textContent = planName.charAt(0).toUpperCase() + planName.slice(1);
+        
+        const planData = {{ subscription_tiers | tojsonfilter }};
+        const price = planData[planName].price_per_month;
+        document.getElementById('modalPrice').textContent = `$${price}/month`;
+        
+        document.getElementById('paymentModal').classList.remove('hidden');
+        document.getElementById('paymentModal').classList.add('flex');
+        
+        // Mount card element
+        cardElement.mount('#card-element');
+    }
+
+    function closePaymentModal() {
+        document.getElementById('paymentModal').classList.add('hidden');
+        document.getElementById('paymentModal').classList.remove('flex');
+        cardElement.unmount();
+    }
+
+    // Handle form submission
+    const form = document.getElementById('payment-form');
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const {token, error} = await stripe.createToken(cardElement);
+
+        if (error) {
+            const errorElement = document.getElementById('card-errors');
+            errorElement.textContent = error.message;
+        } else {
+            // Create checkout session
+            try {
+                const response = await fetch('/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        tier: currentPlan
+                    })
+                });
+
+                const session = await response.json();
+                
+                if (session.checkout_url) {
+                    window.location.href = session.checkout_url;
+                } else {
+                    throw new Error(session.error || 'Failed to create checkout session');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Failed to process payment: ' + error.message, 'error');
+            }
+        }
+    });
+
+    function downloadInvoice(invoiceId) {
+        showNotification('Invoice download would start here', 'info');
+    }
+
+    function managePaymentMethod() {
+        showNotification('Payment method management coming soon', 'info');
+    }
+
+    function viewUsageHistory() {
+        window.location.href = '/analytics';
+    }
+
+    function cancelSubscription() {
+        if (confirm('Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your billing period.')) {
+            showNotification('Subscription cancellation is not implemented in this demo', 'error');
+        }
+    }
+
+    function contactSales() {
+        showNotification('Sales contact form coming soon', 'info');
+    }
+
+    function viewAllInvoices() {
+        showNotification('Full invoice history coming soon', 'info');
+    }
+
+    function updatePaymentMethod() {
+        showNotification('Payment method update coming soon', 'info');
+    }
+
+    function editPaymentMethod() {
+        showNotification('Payment method editing coming soon', 'info');
+    }
+
+    function removePaymentMethod() {
+        if (confirm('Are you sure you want to remove this payment method?')) {
+            showNotification('Payment method removal coming soon', 'info');
+        }
+    }
+
+    function updateBillingAddress() {
+        showNotification('Billing address update coming soon', 'info');
+    }
+</script>
+{% endblock %}

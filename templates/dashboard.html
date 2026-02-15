@@ -1,0 +1,323 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block header_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Welcome Section -->
+    <div class="bg-gradient-to-r from-spotify-green to-spotify-green-hover rounded-2xl p-6 text-white">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold mb-2">Welcome back!</h1>
+                <p class="text-green-100 opacity-90">
+                    {% if user_data %}
+                        {{ user_data[0] }} • {{ user_data[1]|title }} Plan
+                    {% else %}
+                        Demo User • Starter Plan
+                    {% endif %}
+                </p>
+            </div>
+            <div class="text-right">
+                <div class="text-3xl font-bold">
+                    {{ ((user_data[2] - user_data[3]) / user_data[2] * 100)|round|int if user_data else 85 }}%
+                </div>
+                <div class="text-green-100 text-sm">Quota Remaining</div>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="mt-4">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm text-green-100">Token Usage</span>
+                <span class="text-sm text-green-100">
+                    {{ "{:,}".format(user_data[3]) if user_data else "15,000" }} / 
+                    {{ "{:,}".format(user_data[2]) if user_data else "100,000" }} tokens
+                </span>
+            </div>
+            <div class="w-full bg-green-800 bg-opacity-30 rounded-full h-2">
+                <div class="bg-white rounded-full h-2 transition-all duration-500" 
+                     style="width: {{ (user_data[3] / user_data[2] * 100)|round|int if user_data else 15 }}%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Requests This Week -->
+        <div class="bg-spotify-dark rounded-2xl p-6 card-hover">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-3 bg-spotify-green bg-opacity-20 rounded-xl">
+                    <i class="fas fa-rocket text-spotify-green text-xl"></i>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-spotify-text">
+                        {{ weekly_stats[0] if weekly_stats and weekly_stats[0] else "0" }}
+                    </div>
+                    <div class="text-spotify-text-gray text-sm">This Week</div>
+                </div>
+            </div>
+            <div class="text-spotify-text-gray text-sm">API Requests</div>
+            <div class="text-spotify-green text-sm mt-1">
+                <i class="fas fa-arrow-up mr-1"></i>
+                +12% from last week
+            </div>
+        </div>
+
+        <!-- Tokens Used -->
+        <div class="bg-spotify-dark rounded-2xl p-6 card-hover">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-3 bg-blue-500 bg-opacity-20 rounded-xl">
+                    <i class="fas fa-coins text-blue-400 text-xl"></i>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-spotify-text">
+                        {{ "{:,}".format(weekly_stats[1]|int) if weekly_stats and weekly_stats[1] else "0" }}
+                    </div>
+                    <div class="text-spotify-text-gray text-sm">This Week</div>
+                </div>
+            </div>
+            <div class="text-spotify-text-gray text-sm">Tokens Processed</div>
+            <div class="text-blue-400 text-sm mt-1">
+                <i class="fas fa-arrow-up mr-1"></i>
+                +8% efficiency
+            </div>
+        </div>
+
+        <!-- Cost This Week -->
+        <div class="bg-spotify-dark rounded-2xl p-6 card-hover">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-3 bg-yellow-500 bg-opacity-20 rounded-xl">
+                    <i class="fas fa-dollar-sign text-yellow-400 text-xl"></i>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-spotify-text">
+                        ${{ "%.2f"|format(weekly_stats[2]) if weekly_stats and weekly_stats[2] else "0.00" }}
+                    </div>
+                    <div class="text-spotify-text-gray text-sm">This Week</div>
+                </div>
+            </div>
+            <div class="text-spotify-text-gray text-sm">API Costs</div>
+            <div class="text-green-400 text-sm mt-1">
+                <i class="fas fa-arrow-down mr-1"></i>
+                -5% vs last week
+            </div>
+        </div>
+
+        <!-- Active Models -->
+        <div class="bg-spotify-dark rounded-2xl p-6 card-hover">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-3 bg-purple-500 bg-opacity-20 rounded-xl">
+                    <i class="fas fa-brain text-purple-400 text-xl"></i>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-spotify-text">
+                        {{ model_breakdown|length if model_breakdown else "2" }}
+                    </div>
+                    <div class="text-spotify-text-gray text-sm">Models</div>
+                </div>
+            </div>
+            <div class="text-spotify-text-gray text-sm">Models Used</div>
+            <div class="text-purple-400 text-sm mt-1">
+                <i class="fas fa-check mr-1"></i>
+                All systems online
+            </div>
+        </div>
+    </div>
+
+    <!-- API Key Section -->
+    <div class="bg-spotify-dark rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-semibold text-spotify-text">API Configuration</h3>
+            <button onclick="regenerateApiKey()" class="bg-spotify-green hover:bg-spotify-green-hover text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                <i class="fas fa-refresh mr-2"></i>
+                Regenerate Key
+            </button>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- API Key -->
+            <div class="space-y-4">
+                <div>
+                    <label class="text-spotify-text-gray text-sm font-medium">Your API Key</label>
+                    <div class="mt-2 flex">
+                        <input type="text" 
+                               id="apiKey"
+                               value="{{ user_data[5] if user_data else 'demo_1234567890abcdef' }}" 
+                               readonly
+                               class="flex-1 bg-spotify-gray text-spotify-text px-4 py-3 rounded-l-lg border border-spotify-light-gray focus:outline-none focus:border-spotify-green">
+                        <button onclick="copyToClipboard(document.getElementById('apiKey').value)"
+                                class="bg-spotify-green hover:bg-spotify-green-hover text-white px-4 py-3 rounded-r-lg transition-colors duration-200">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <p class="text-spotify-text-gray text-sm mt-2">
+                        Use this key in the <code class="bg-spotify-gray px-2 py-1 rounded">X-API-Key</code> header
+                    </p>
+                </div>
+
+                <!-- Quick Start -->
+                <div>
+                    <label class="text-spotify-text-gray text-sm font-medium">Quick Start (curl)</label>
+                    <div class="mt-2 bg-spotify-black rounded-lg p-4 border border-spotify-gray">
+                        <pre class="text-sm text-spotify-text-gray overflow-x-auto"><code id="curlExample">curl -X POST {{ request.url_root }}api/chat \
+  -H "X-API-Key: {{ user_data[5] if user_data else 'your-api-key' }}" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Hello, world!"}'</code></pre>
+                        <button onclick="copyToClipboard(document.getElementById('curlExample').textContent)"
+                                class="mt-2 text-spotify-green hover:text-spotify-green-hover text-sm">
+                            <i class="fas fa-copy mr-1"></i>Copy Example
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subscription Info -->
+            <div class="space-y-4">
+                <div class="bg-spotify-gray rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="text-lg font-semibold text-spotify-text">
+                            {{ user_data[1]|title if user_data else "Starter" }} Plan
+                        </h4>
+                        <span class="px-3 py-1 bg-spotify-green text-white text-sm rounded-full">
+                            Active
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-spotify-text-gray">Monthly Tokens</span>
+                            <span class="text-spotify-text font-medium">
+                                {{ "{:,}".format(user_data[2]) if user_data else "100,000" }}
+                            </span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-spotify-text-gray">Used This Month</span>
+                            <span class="text-spotify-text font-medium">
+                                {{ "{:,}".format(user_data[3]) if user_data else "15,000" }}
+                            </span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-spotify-text-gray">Rate Limit</span>
+                            <span class="text-spotify-text font-medium">
+                                {{ subscription_tiers[user_data[1]]['rate_limit'] if user_data and user_data[1] in subscription_tiers else "1000/hour" }}
+                            </span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-spotify-text-gray">Next Reset</span>
+                            <span class="text-spotify-text font-medium">
+                                {{ user_data[5].split('T')[0] if user_data and user_data[5] else "2024-03-15" }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-spotify-light-gray">
+                        <a href="/billing" class="w-full bg-spotify-green hover:bg-spotify-green-hover text-white py-2 px-4 rounded-lg transition-colors duration-200 text-center block">
+                            Manage Subscription
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity & Model Usage -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Model Usage -->
+        <div class="bg-spotify-dark rounded-2xl p-6">
+            <h3 class="text-xl font-semibold text-spotify-text mb-4">Model Usage (7 days)</h3>
+            
+            {% if model_breakdown %}
+                <div class="space-y-4">
+                    {% for model, requests in model_breakdown %}
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-3 h-3 rounded-full bg-spotify-green"></div>
+                                <span class="text-spotify-text font-medium">{{ model }}</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-spotify-text font-medium">{{ requests }} requests</div>
+                                <div class="text-spotify-text-gray text-sm">
+                                    {{ (requests / weekly_stats[0] * 100)|round|int if weekly_stats and weekly_stats[0] else 0 }}%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full bg-spotify-gray rounded-full h-2">
+                            <div class="bg-spotify-green rounded-full h-2 transition-all duration-500" 
+                                 style="width: {{ (requests / weekly_stats[0] * 100)|round|int if weekly_stats and weekly_stats[0] else 0 }}%"></div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-8">
+                    <i class="fas fa-chart-bar text-4xl text-spotify-text-gray mb-4"></i>
+                    <p class="text-spotify-text-gray">No recent activity</p>
+                    <p class="text-spotify-text-gray text-sm mt-2">Start making API calls to see usage statistics</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-spotify-dark rounded-2xl p-6">
+            <h3 class="text-xl font-semibold text-spotify-text mb-4">Quick Actions</h3>
+            
+            <div class="space-y-3">
+                <a href="/test" class="flex items-center justify-between p-4 bg-spotify-gray hover:bg-spotify-light-gray rounded-lg transition-colors duration-200 group">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-flask text-spotify-green group-hover:text-spotify-green-hover"></i>
+                        <div>
+                            <div class="text-spotify-text font-medium">Test API</div>
+                            <div class="text-spotify-text-gray text-sm">Try out your API endpoints</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-spotify-text-gray group-hover:text-spotify-green"></i>
+                </a>
+
+                <a href="/analytics" class="flex items-center justify-between p-4 bg-spotify-gray hover:bg-spotify-light-gray rounded-lg transition-colors duration-200 group">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-chart-line text-blue-400 group-hover:text-blue-300"></i>
+                        <div>
+                            <div class="text-spotify-text font-medium">View Analytics</div>
+                            <div class="text-spotify-text-gray text-sm">Detailed usage insights</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-spotify-text-gray group-hover:text-spotify-green"></i>
+                </a>
+
+                <a href="/docs" class="flex items-center justify-between p-4 bg-spotify-gray hover:bg-spotify-light-gray rounded-lg transition-colors duration-200 group">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-book text-purple-400 group-hover:text-purple-300"></i>
+                        <div>
+                            <div class="text-spotify-text font-medium">Documentation</div>
+                            <div class="text-spotify-text-gray text-sm">API reference and guides</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-spotify-text-gray group-hover:text-spotify-green"></i>
+                </a>
+
+                <a href="/billing" class="flex items-center justify-between p-4 bg-spotify-gray hover:bg-spotify-light-gray rounded-lg transition-colors duration-200 group">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-credit-card text-yellow-400 group-hover:text-yellow-300"></i>
+                        <div>
+                            <div class="text-spotify-text font-medium">Billing & Usage</div>
+                            <div class="text-spotify-text-gray text-sm">Manage your subscription</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-spotify-text-gray group-hover:text-spotify-green"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function regenerateApiKey() {
+        if (confirm('Are you sure you want to regenerate your API key? This will invalidate your current key.')) {
+            // In a real implementation, this would make an API call
+            showNotification('API key regeneration is not implemented in this demo', 'error');
+        }
+    }
+</script>
+{% endblock %}

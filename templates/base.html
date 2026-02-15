@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InstaClaw - {% block title %}Dashboard{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'spotify-black': '#121212',
+                        'spotify-dark': '#1e1e1e',
+                        'spotify-gray': '#2a2a2a',
+                        'spotify-light-gray': '#3e3e3e',
+                        'spotify-green': '#1db954',
+                        'spotify-green-hover': '#1ed760',
+                        'spotify-text': '#ffffff',
+                        'spotify-text-gray': '#b3b3b3',
+                    },
+                    fontFamily: {
+                        'spotify': ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1db954 0%, #1ed760 100%);
+        }
+        .card-hover {
+            transition: all 0.2s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(29, 185, 84, 0.15);
+        }
+        .spotify-scrollbar::-webkit-scrollbar {
+            width: 12px;
+        }
+        .spotify-scrollbar::-webkit-scrollbar-track {
+            background: #2a2a2a;
+            border-radius: 6px;
+        }
+        .spotify-scrollbar::-webkit-scrollbar-thumb {
+            background: #3e3e3e;
+            border-radius: 6px;
+        }
+        .spotify-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #4a4a4a;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #1db954 0%, #1ed760 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-spotify-black text-spotify-text font-spotify h-full">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <nav class="bg-spotify-dark w-64 flex-shrink-0 overflow-y-auto spotify-scrollbar">
+            <div class="p-6">
+                <!-- Logo -->
+                <div class="mb-8">
+                    <h1 class="text-2xl font-bold text-gradient">
+                        🦞
+                        InstaClaw
+                    </h1>
+                    <p class="text-spotify-text-gray text-sm mt-1">Instant AI Gateway</p>
+                </div>
+
+                <!-- Navigation Menu -->
+                <div class="space-y-2">
+                    <a href="/" class="flex items-center space-x-3 text-spotify-text hover:text-spotify-green px-4 py-3 rounded-lg hover:bg-spotify-gray transition-all duration-200 {% if request.endpoint == 'dashboard' %}bg-spotify-gray text-spotify-green{% endif %}">
+                        <i class="fas fa-home w-5"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    
+                    <a href="/test" class="flex items-center space-x-3 text-spotify-text hover:text-spotify-green px-4 py-3 rounded-lg hover:bg-spotify-gray transition-all duration-200 {% if request.endpoint == 'test_interface' %}bg-spotify-gray text-spotify-green{% endif %}">
+                        <i class="fas fa-flask w-5"></i>
+                        <span>API Test</span>
+                    </a>
+                    
+                    <a href="/analytics" class="flex items-center space-x-3 text-spotify-text hover:text-spotify-green px-4 py-3 rounded-lg hover:bg-spotify-gray transition-all duration-200 {% if request.endpoint == 'analytics' %}bg-spotify-gray text-spotify-green{% endif %}">
+                        <i class="fas fa-chart-bar w-5"></i>
+                        <span>Analytics</span>
+                    </a>
+                    
+                    <a href="/billing" class="flex items-center space-x-3 text-spotify-text hover:text-spotify-green px-4 py-3 rounded-lg hover:bg-spotify-gray transition-all duration-200 {% if request.endpoint == 'billing' %}bg-spotify-gray text-spotify-green{% endif %}">
+                        <i class="fas fa-credit-card w-5"></i>
+                        <span>Billing</span>
+                    </a>
+                    
+                    <a href="/docs" class="flex items-center space-x-3 text-spotify-text hover:text-spotify-green px-4 py-3 rounded-lg hover:bg-spotify-gray transition-all duration-200 {% if request.endpoint == 'api_docs' %}bg-spotify-gray text-spotify-green{% endif %}">
+                        <i class="fas fa-book w-5"></i>
+                        <span>Documentation</span>
+                    </a>
+                </div>
+
+                <!-- Admin Section (if applicable) -->
+                <div class="mt-8 pt-8 border-t border-spotify-gray">
+                    <div class="space-y-2">
+                        <a href="/admin" class="flex items-center space-x-3 text-spotify-text hover:text-spotify-green px-4 py-3 rounded-lg hover:bg-spotify-gray transition-all duration-200">
+                            <i class="fas fa-cog w-5"></i>
+                            <span>Admin</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- User Section -->
+                <div class="mt-8 pt-8 border-t border-spotify-gray">
+                    <div class="px-4 py-3">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-8 h-8 bg-spotify-green rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-spotify-black text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-spotify-text">User Account</p>
+                                <p class="text-xs text-spotify-text-gray">{{ session.get('user_email', 'demo@example.com') }}</p>
+                            </div>
+                        </div>
+                        <a href="/auth/logout" class="w-full text-center px-3 py-2 text-sm bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text rounded-lg transition-colors duration-200 block">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Bar -->
+            <header class="bg-spotify-dark border-b border-spotify-gray px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <h2 class="text-xl font-semibold text-spotify-text">
+                            {% block header_title %}{% endblock %}
+                        </h2>
+                    </div>
+                    
+                    <!-- User Actions -->
+                    <div class="flex items-center space-x-4">
+                        <!-- Notifications -->
+                        <button class="text-spotify-text-gray hover:text-spotify-green transition-colors duration-200">
+                            <i class="fas fa-bell text-lg"></i>
+                        </button>
+                        
+                        <!-- Settings -->
+                        <button class="text-spotify-text-gray hover:text-spotify-green transition-colors duration-200">
+                            <i class="fas fa-cog text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="px-6 py-4">
+                        {% for message in messages %}
+                            <div class="bg-spotify-green bg-opacity-20 border border-spotify-green text-spotify-green px-4 py-3 rounded-lg mb-4 fade-in">
+                                <div class="flex items-center">
+                                    <i class="fas fa-check-circle mr-3"></i>
+                                    <span>{{ message }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Page Content -->
+            <main class="flex-1 overflow-y-auto spotify-scrollbar px-6 py-6">
+                <div class="fade-in">
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Global JavaScript -->
+    <script>
+        // Global utilities
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 ${
+                type === 'success' ? 'bg-spotify-green' : 
+                type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+            } text-white`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-triangle' : 'info'}-circle mr-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        // Copy to clipboard function
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Copied to clipboard!');
+            }).catch(() => {
+                showNotification('Failed to copy to clipboard', 'error');
+            });
+        }
+
+        // Format large numbers
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(amount);
+        }
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

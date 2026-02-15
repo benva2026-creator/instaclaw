@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - InstaClaw</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'spotify-black': '#121212',
+                        'spotify-dark': '#1e1e1e',
+                        'spotify-gray': '#2a2a2a',
+                        'spotify-light-gray': '#3e3e3e',
+                        'spotify-green': '#1db954',
+                        'spotify-green-hover': '#1ed760',
+                        'spotify-text': '#ffffff',
+                        'spotify-text-gray': '#b3b3b3',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1db954 0%, #1ed760 100%);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #1db954 0%, #1ed760 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-spotify-black text-spotify-text h-full">
+    <div class="min-h-full flex">
+        <!-- Left side - Hero Section -->
+        <div class="hidden lg:block relative w-0 flex-1">
+            <div class="absolute inset-0 h-full w-full bg-gradient-to-br from-spotify-green to-spotify-green-hover">
+                <div class="flex items-center justify-center h-full p-12">
+                    <div class="text-center text-white">
+                        <div class="pulse mb-8">
+                            <i class="fas fa-code text-6xl mb-6"></i>
+                        </div>
+                        <h1 class="text-4xl font-bold mb-6">
+                            Start Building Today
+                        </h1>
+                        <p class="text-xl mb-8 opacity-90">
+                            Join thousands of developers using our unified LLM API platform
+                        </p>
+                        
+                        <!-- Features List -->
+                        <div class="text-left max-w-sm mx-auto space-y-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-2xl mr-4"></i>
+                                <span class="text-lg">10,000 free tokens monthly</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-2xl mr-4"></i>
+                                <span class="text-lg">Access to all models</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-2xl mr-4"></i>
+                                <span class="text-lg">Real-time analytics</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-2xl mr-4"></i>
+                                <span class="text-lg">24/7 support</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8 text-sm opacity-75">
+                            No credit card required • Cancel anytime
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right side - Registration Form -->
+        <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24">
+            <div class="mx-auto w-full max-w-sm lg:w-96">
+                <div>
+                    <div class="flex items-center mb-8">
+                        <i class="fas fa-bolt text-3xl text-spotify-green mr-3"></i>
+                        <h1 class="text-3xl font-bold text-gradient">InstaClaw</h1>
+                    </div>
+                    <h2 class="text-3xl font-bold text-spotify-text">Create your account</h2>
+                    <p class="mt-2 text-spotify-text-gray">
+                        Get started with your free account in seconds
+                    </p>
+                </div>
+
+                <div class="mt-8">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="bg-red-500 bg-opacity-20 border border-red-500 text-red-400 px-4 py-3 rounded-lg mb-4">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-exclamation-triangle mr-3"></i>
+                                        <span>{{ message }}</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" class="space-y-6" id="registerForm">
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-spotify-text">
+                                Email address *
+                            </label>
+                            <div class="mt-1">
+                                <input id="email" 
+                                       name="email" 
+                                       type="email" 
+                                       autocomplete="email" 
+                                       required
+                                       class="appearance-none block w-full px-3 py-2 bg-spotify-dark border border-spotify-gray rounded-lg text-spotify-text placeholder-spotify-text-gray focus:outline-none focus:border-spotify-green focus:ring-spotify-green sm:text-sm"
+                                       placeholder="you@example.com">
+                                <div id="emailError" class="text-red-400 text-sm mt-1 hidden"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-spotify-text">
+                                Password *
+                            </label>
+                            <div class="mt-1 relative">
+                                <input id="password" 
+                                       name="password" 
+                                       type="password" 
+                                       autocomplete="new-password" 
+                                       required
+                                       minlength="8"
+                                       class="appearance-none block w-full px-3 py-2 bg-spotify-dark border border-spotify-gray rounded-lg text-spotify-text placeholder-spotify-text-gray focus:outline-none focus:border-spotify-green focus:ring-spotify-green sm:text-sm"
+                                       placeholder="Minimum 8 characters">
+                                <button type="button" 
+                                        onclick="togglePassword('password')"
+                                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-spotify-text-gray hover:text-spotify-text">
+                                    <i id="passwordIcon" class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Password Strength Indicator -->
+                            <div class="mt-2">
+                                <div class="flex space-x-1">
+                                    <div id="strength1" class="h-1 w-1/4 bg-spotify-gray rounded"></div>
+                                    <div id="strength2" class="h-1 w-1/4 bg-spotify-gray rounded"></div>
+                                    <div id="strength3" class="h-1 w-1/4 bg-spotify-gray rounded"></div>
+                                    <div id="strength4" class="h-1 w-1/4 bg-spotify-gray rounded"></div>
+                                </div>
+                                <div id="strengthText" class="text-xs text-spotify-text-gray mt-1">Password strength</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="confirmPassword" class="block text-sm font-medium text-spotify-text">
+                                Confirm Password *
+                            </label>
+                            <div class="mt-1 relative">
+                                <input id="confirmPassword" 
+                                       name="confirmPassword" 
+                                       type="password" 
+                                       autocomplete="new-password" 
+                                       required
+                                       class="appearance-none block w-full px-3 py-2 bg-spotify-dark border border-spotify-gray rounded-lg text-spotify-text placeholder-spotify-text-gray focus:outline-none focus:border-spotify-green focus:ring-spotify-green sm:text-sm"
+                                       placeholder="Re-enter your password">
+                                <button type="button" 
+                                        onclick="togglePassword('confirmPassword')"
+                                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-spotify-text-gray hover:text-spotify-text">
+                                    <i id="confirmPasswordIcon" class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div id="confirmPasswordError" class="text-red-400 text-sm mt-1 hidden"></div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="terms" 
+                                       name="terms" 
+                                       type="checkbox"
+                                       required
+                                       class="h-4 w-4 text-spotify-green focus:ring-spotify-green border-spotify-gray rounded bg-spotify-dark">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="terms" class="text-spotify-text-gray">
+                                    I agree to the 
+                                    <a href="#" class="text-spotify-green hover:text-spotify-green-hover">Terms of Service</a> 
+                                    and 
+                                    <a href="#" class="text-spotify-green hover:text-spotify-green-hover">Privacy Policy</a>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="newsletter" 
+                                       name="newsletter" 
+                                       type="checkbox"
+                                       class="h-4 w-4 text-spotify-green focus:ring-spotify-green border-spotify-gray rounded bg-spotify-dark">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="newsletter" class="text-spotify-text-gray">
+                                    Send me updates about new features and API improvements
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <button type="submit"
+                                    id="submitBtn"
+                                    disabled
+                                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-spotify-gray cursor-not-allowed transition-all duration-200">
+                                <i class="fas fa-user-plus mr-2"></i>
+                                Create Account
+                            </button>
+                        </div>
+
+                        <div class="mt-6">
+                            <div class="relative">
+                                <div class="absolute inset-0 flex items-center">
+                                    <div class="w-full border-t border-spotify-gray"></div>
+                                </div>
+                                <div class="relative flex justify-center text-sm">
+                                    <span class="px-2 bg-spotify-black text-spotify-text-gray">Or continue with</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-6">
+                                <button type="button"
+                                        class="w-full inline-flex justify-center py-3 px-4 border border-spotify-gray rounded-lg shadow-sm bg-spotify-dark text-sm font-medium text-spotify-text hover:bg-spotify-gray transition-colors duration-200">
+                                    <i class="fab fa-google mr-2"></i>
+                                    Sign up with Google
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <p class="text-sm text-spotify-text-gray">
+                                Already have an account?
+                                <a href="/auth/login" class="font-medium text-spotify-green hover:text-spotify-green-hover">
+                                    Sign in here
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            const passwordIcon = document.getElementById(fieldId + 'Icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordIcon.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                passwordIcon.className = 'fas fa-eye';
+            }
+        }
+
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            let feedback = [];
+
+            if (password.length >= 8) strength++;
+            else feedback.push("at least 8 characters");
+
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            else feedback.push("upper and lowercase letters");
+
+            if (/\d/.test(password)) strength++;
+            else feedback.push("at least one number");
+
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            else feedback.push("a special character");
+
+            return { strength, feedback };
+        }
+
+        function updatePasswordStrength() {
+            const password = document.getElementById('password').value;
+            const { strength } = checkPasswordStrength(password);
+            
+            // Reset all strength indicators
+            for (let i = 1; i <= 4; i++) {
+                const indicator = document.getElementById(`strength${i}`);
+                indicator.className = 'h-1 w-1/4 bg-spotify-gray rounded';
+            }
+            
+            // Update based on strength
+            const colors = ['bg-red-500', 'bg-yellow-500', 'bg-blue-500', 'bg-green-500'];
+            const texts = ['Weak', 'Fair', 'Good', 'Strong'];
+            
+            if (password.length > 0) {
+                for (let i = 1; i <= strength; i++) {
+                    document.getElementById(`strength${i}`).className = `h-1 w-1/4 ${colors[strength-1]} rounded`;
+                }
+                document.getElementById('strengthText').textContent = `Password strength: ${texts[strength-1] || 'Very weak'}`;
+            } else {
+                document.getElementById('strengthText').textContent = 'Password strength';
+            }
+        }
+
+        function validateForm() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const terms = document.getElementById('terms').checked;
+            const submitBtn = document.getElementById('submitBtn');
+
+            let isValid = true;
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const emailError = document.getElementById('emailError');
+            if (email && !emailRegex.test(email)) {
+                emailError.textContent = 'Please enter a valid email address';
+                emailError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                emailError.classList.add('hidden');
+            }
+
+            // Password confirmation validation
+            const confirmPasswordError = document.getElementById('confirmPasswordError');
+            if (password && confirmPassword && password !== confirmPassword) {
+                confirmPasswordError.textContent = 'Passwords do not match';
+                confirmPasswordError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                confirmPasswordError.classList.add('hidden');
+            }
+
+            // Check if all required fields are filled
+            const allFieldsFilled = email && password && confirmPassword && terms;
+            const passwordsMatch = password === confirmPassword;
+            const validEmail = emailRegex.test(email);
+            const strongPassword = checkPasswordStrength(password).strength >= 2;
+
+            if (allFieldsFilled && passwordsMatch && validEmail && strongPassword) {
+                submitBtn.disabled = false;
+                submitBtn.className = 'w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white gradient-bg hover:from-spotify-green-hover hover:to-spotify-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-spotify-green transition-all duration-200';
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.className = 'w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-spotify-gray cursor-not-allowed transition-all duration-200';
+            }
+        }
+
+        // Add event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registerForm');
+            const inputs = form.querySelectorAll('input');
+            
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    if (this.id === 'password') {
+                        updatePasswordStrength();
+                    }
+                    validateForm();
+                });
+                
+                input.addEventListener('blur', validateForm);
+            });
+
+            // Prevent form submission if validation fails
+            form.addEventListener('submit', function(e) {
+                const submitBtn = document.getElementById('submitBtn');
+                if (submitBtn.disabled) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
