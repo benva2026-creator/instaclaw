@@ -21,9 +21,10 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_cors import CORS
 import sqlite3
-import openai
-from anthropic import Anthropic
 from dotenv import load_dotenv
+
+# Optional imports - will be done lazily to avoid startup crashes
+openai = None
 
 # Load environment variables
 load_dotenv()
@@ -35,8 +36,20 @@ CORS(app)
 # Initialize services (optional - app works without API keys)
 if os.getenv('STRIPE_SECRET_KEY'):
     stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
-if os.getenv('OPENAI_API_KEY'):
-    openai.api_key = os.getenv('OPENAI_API_KEY')
+
+def get_openai_client():
+    """Lazy initialization of openai client"""
+    global openai
+    if openai is None:
+        try:
+            import openai as openai_module
+            openai = openai_module
+            if os.getenv('OPENAI_API_KEY'):
+                openai.api_key = os.getenv('OPENAI_API_KEY')
+        except Exception as e:
+            print(f"Warning: Failed to initialize OpenAI client: {e}")
+            openai = False
+    return openai if openai is not False else None
 
 # Lazy initialize anthropic client to avoid startup issues
 anthropic_client = None
@@ -46,6 +59,7 @@ def get_anthropic_client():
     global anthropic_client
     if anthropic_client is None and os.getenv('ANTHROPIC_API_KEY'):
         try:
+            from anthropic import Anthropic
             anthropic_client = Anthropic(api_key=os.getenv('ANTHROPIC_API_KEY'))
         except Exception as e:
             print(f"Warning: Failed to initialize Anthropic client: {e}")
@@ -191,12 +205,13 @@ except Exception as e:
 # Real API integrations
 def call_openai_api(prompt: str, model: str = "gpt-3.5-turbo") -> Dict[str, Any]:
     """Real OpenAI API call"""
-    if not openai.api_key:
+    openai_client = get_openai_client()
+    if not openai_client or not getattr(openai_client, 'api_key', None):
         return call_openai_mock(prompt, model)
     
     try:
         start_time = datetime.now()
-        response = openai.ChatCompletion.create(
+        response = openai_client.ChatCompletion.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
             max_tokens=500
