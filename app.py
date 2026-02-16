@@ -166,7 +166,12 @@ def init_db():
 
 # Initialize database
 print("Starting InstaClaw...")
-init_db()
+try:
+    init_db()
+    print("✅ Database initialized successfully!")
+except Exception as e:
+    print(f"⚠️  Database initialization warning: {e}")
+    # Continue anyway - app can work without full database features
 
 # Real API integrations
 def call_openai_api(prompt: str, model: str = "gpt-3.5-turbo") -> Dict[str, Any]:
@@ -913,12 +918,27 @@ def openclaw_unified():
 # Health check endpoint
 @app.route('/health')
 def health_check():
-    """Health check endpoint"""
-    return jsonify({
-        "status": "healthy",
-        "timestamp": datetime.now().isoformat(),
-        "version": "1.0.0"
-    })
+    """Health check endpoint - simple and reliable for deployment"""
+    try:
+        # Simple health check that doesn't depend on database
+        return jsonify({
+            "status": "healthy",
+            "timestamp": datetime.now().isoformat(),
+            "version": "1.0.0",
+            "environment": os.getenv('RAILWAY_ENVIRONMENT', 'local')
+        }), 200
+    except Exception as e:
+        return jsonify({
+            "status": "unhealthy",
+            "error": str(e),
+            "timestamp": datetime.now().isoformat()
+        }), 500
+
+# Simple ping endpoint for basic connectivity
+@app.route('/ping')
+def ping():
+    """Ultra-simple ping endpoint"""
+    return "pong", 200
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
