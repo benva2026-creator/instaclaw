@@ -32,10 +32,25 @@ app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'dev-secret-key-change-in-prod')
 CORS(app)
 
-# Initialize services
-stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
-openai.api_key = os.getenv('OPENAI_API_KEY')
-anthropic_client = Anthropic(api_key=os.getenv('ANTHROPIC_API_KEY')) if os.getenv('ANTHROPIC_API_KEY') else None
+# Initialize services (optional - app works without API keys)
+if os.getenv('STRIPE_SECRET_KEY'):
+    stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
+if os.getenv('OPENAI_API_KEY'):
+    openai.api_key = os.getenv('OPENAI_API_KEY')
+
+# Lazy initialize anthropic client to avoid startup issues
+anthropic_client = None
+
+def get_anthropic_client():
+    """Lazy initialization of anthropic client"""
+    global anthropic_client
+    if anthropic_client is None and os.getenv('ANTHROPIC_API_KEY'):
+        try:
+            anthropic_client = Anthropic(api_key=os.getenv('ANTHROPIC_API_KEY'))
+        except Exception as e:
+            print(f"Warning: Failed to initialize Anthropic client: {e}")
+            anthropic_client = False  # Mark as failed to avoid retry
+    return anthropic_client if anthropic_client is not False else None
 
 # Redis setup for rate limiting
 try:
@@ -205,12 +220,13 @@ def call_openai_api(prompt: str, model: str = "gpt-3.5-turbo") -> Dict[str, Any]
 
 def call_anthropic_api(prompt: str, model: str = "claude-3-sonnet-20240229") -> Dict[str, Any]:
     """Real Anthropic API call"""
-    if not anthropic_client:
+    client = get_anthropic_client()
+    if not client:
         return call_claude_mock(prompt, model)
     
     try:
         start_time = datetime.now()
-        message = anthropic_client.messages.create(
+        message = client.messages.create(
             model=model,
             max_tokens=500,
             messages=[{"role": "user", "content": prompt}]
