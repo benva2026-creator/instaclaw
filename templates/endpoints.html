@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block title %}All Endpoints{% endblock %}
+{% block header_title %}OpenClaw Endpoints{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header Section -->
+    <div class="bg-gradient-to-r from-spotify-green to-spotify-green-hover rounded-2xl p-8 text-white">
+        <div class="max-w-4xl">
+            <h1 class="text-3xl font-bold mb-4">🦞 All OpenClaw Endpoints</h1>
+            <p class="text-green-100 text-lg mb-6">
+                Access every OpenClaw tool through InstaClaw's unified API. One endpoint, unlimited possibilities.
+            </p>
+            <div class="bg-white bg-opacity-20 rounded-lg p-4 font-mono text-sm">
+                <div class="text-green-100">POST</div>
+                <div class="text-lg font-semibold">{{ request.url_root }}api/openclaw</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Endpoint Categories -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Communication & Productivity -->
+        <div class="bg-spotify-dark rounded-2xl p-6">
+            <div class="flex items-center mb-6">
+                <i class="fas fa-comments text-2xl text-spotify-green mr-4"></i>
+                <h2 class="text-xl font-semibold text-spotify-text">Communication & Productivity</h2>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="bg-spotify-gray rounded-lg p-4 hover:bg-spotify-light-gray transition-colors card-hover">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-spotify-text">Gmail Integration</h3>
+                        <span class="bg-spotify-green text-white text-xs px-2 py-1 rounded">gog</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray mb-3">Send emails, search inbox, manage labels</p>
+                    <pre class="text-xs bg-spotify-black rounded p-2 text-spotify-green">{"tool": "gog", "action": "send_email", "to": "user@example.com"}</pre>
+                </div>
+
+                <div class="bg-spotify-gray rounded-lg p-4 hover:bg-spotify-light-gray transition-colors card-hover">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-spotify-text">iMessage/SMS</h3>
+                        <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">imsg</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray mb-3">Send messages, check chat history</p>
+                    <pre class="text-xs bg-spotify-black rounded p-2 text-spotify-green">{"tool": "imsg", "action": "send", "to": "+1234567890", "message": "Hello!"}</pre>
+                </div>
+
+                <div class="bg-spotify-gray rounded-lg p-4 hover:bg-spotify-light-gray transition-colors card-hover">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-spotify-text">Google Calendar</h3>
+                        <span class="bg-spotify-green text-white text-xs px-2 py-1 rounded">gog</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray mb-3">Create events, check schedule</p>
+                    <pre class="text-xs bg-spotify-black rounded p-2 text-spotify-green">{"tool": "gog", "action": "create_event", "title": "Meeting", "start": "2024-03-15T10:00:00"}</pre>
+                </div>
+
+                <div class="bg-spotify-gray rounded-lg p-4 hover:bg-spotify-light-gray transition-colors card-hover">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-spotify-text">Apple Notes</h3>
+                        <span class="bg-gray-600 text-white text-xs px-2 py-1 rounded">apple-notes</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray mb-3">Create, search, and manage notes</p>
+                    <pre class="text-xs bg-spotify-black rounded p-2 text-spotify-green">{"tool": "apple-notes", "action": "create", "title": "Ideas", "content": "..."}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Development & Code -->
+        <div class="bg-spotify-dark rounded-2xl p-6">
+            <div class="flex items-center mb-6">
+                <i class="fas fa-code text-2xl text-spotify-green mr-4"></i>
+                <h2 class="text-xl font-semibold text-spotify-text">Development & Code</h2>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="bg-spotify-gray rounded-lg p-4 hover:bg-spotify-light-gray transition-colors card-hover">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-spotify-text">GitHub Integration</h3>
+                        <span class="bg-black text-white text-xs px-2 py-1 rounded">github</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray mb-3">Create issues, PRs, manage repos</p>
+                    <pre class="text-xs bg-spotify-black rounded p-2 text-spotify-green">{"tool": "github", "action": "create_issue", "repo": "owner/repo", "title": "Bug fix"}</pre>
+                </div>
+
+                <div class="bg-spotify-gray rounded-lg p-4 hover:bg-spotify-light-gray transition-colors card-hover">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-spotify-text">File Operations</h3>
+                        <span class="bg-purple-600 text-white text-xs px-2 py-1 rounded">read/write/exec</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray mb-3">Read, write files, execute commands</p>
+                    <pre class="text-xs bg-spotify-black rounded p-2 text-spotify-green">{"tool": "read", "file_path": "/path/to/file.txt"}</pre>
+                </div>
+
+                <div class="bg-spotify-gray rounded-lg p-4 hover:bg-spotify-light-gray transition-colors card-hover">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-spotify-text">Browser Control</h3>
+                        <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded">browser</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray mb-3">Automate web interactions</p>
+                    <pre class="text-xs bg-spotify-black rounded p-2 text-spotify-green">{"tool": "browser", "action": "navigate", "url": "https://example.com"}</pre>
+                </div>
+
+                <div class="bg-spotify-gray rounded-lg p-4 hover:bg-spotify-light-gray transition-colors card-hover">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-spotify-text">macOS UI Control</h3>
+                        <span class="bg-gray-500 text-white text-xs px-2 py-1 rounded">peekaboo</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray mb-3">Capture and automate macOS UI</p>
+                    <pre class="text-xs bg-spotify-black rounded p-2 text-spotify-green">{"tool": "peekaboo", "action": "screenshot", "save_path": "/tmp/shot.png"}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Information & Search -->
+        <div class="bg-spotify-dark rounded-2xl p-6">
+            <div class="flex items-center mb-6">
+                <i class="fas fa-search text-2xl text-spotify-green mr-4"></i>
+                <h2 class="text-xl font-semibold text-spotify-text">Information & Search</h2>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="bg-spotify-gray rounded-lg p-4 hover:bg-spotify-light-gray transition-colors card-hover">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-spotify-text">Web Search</h3>
+                        <span class="bg-orange-600 text-white text-xs px-2 py-1 rounded">web_search</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray mb-3">Search the web with Brave API</p>
+                    <pre class="text-xs bg-spotify-black rounded p-2 text-spotify-green">{"tool": "web_search", "query": "latest AI news", "count": 10}</pre>
+                </div>
+
+                <div class="bg-spotify-gray rounded-lg p-4 hover:bg-spotify-light-gray transition-colors card-hover">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-spotify-text">Web Fetch</h3>
+                        <span class="bg-orange-600 text-white text-xs px-2 py-1 rounded">web_fetch</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray mb-3">Extract content from any webpage</p>
+                    <pre class="text-xs bg-spotify-black rounded p-2 text-spotify-green">{"tool": "web_fetch", "url": "https://example.com", "extract_mode": "markdown"}</pre>
+                </div>
+
+                <div class="bg-spotify-gray rounded-lg p-4 hover:bg-spotify-light-gray transition-colors card-hover">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-spotify-text">Weather Data</h3>
+                        <span class="bg-blue-400 text-white text-xs px-2 py-1 rounded">weather</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray mb-3">Get weather forecasts and conditions</p>
+                    <pre class="text-xs bg-spotify-black rounded p-2 text-spotify-green">{"tool": "weather", "location": "New York", "forecast": true}</pre>
+                </div>
+
+                <div class="bg-spotify-gray rounded-lg p-4 hover:bg-spotify-light-gray transition-colors card-hover">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-spotify-text">Memory Search</h3>
+                        <span class="bg-indigo-600 text-white text-xs px-2 py-1 rounded">memory</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray mb-3">Search through stored memories</p>
+                    <pre class="text-xs bg-spotify-black rounded p-2 text-spotify-green">{"tool": "memory_search", "query": "project planning", "max_results": 5}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task Management -->
+        <div class="bg-spotify-dark rounded-2xl p-6">
+            <div class="flex items-center mb-6">
+                <i class="fas fa-tasks text-2xl text-spotify-green mr-4"></i>
+                <h2 class="text-xl font-semibold text-spotify-text">Task Management</h2>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="bg-spotify-gray rounded-lg p-4 hover:bg-spotify-light-gray transition-colors card-hover">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-spotify-text">Things 3 (macOS)</h3>
+                        <span class="bg-red-600 text-white text-xs px-2 py-1 rounded">things-mac</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray mb-3">Add tasks, projects, check inbox</p>
+                    <pre class="text-xs bg-spotify-black rounded p-2 text-spotify-green">{"tool": "things-mac", "action": "add", "title": "Review code", "list": "inbox"}</pre>
+                </div>
+
+                <div class="bg-spotify-gray rounded-lg p-4 hover:bg-spotify-light-gray transition-colors card-hover">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-spotify-text">Apple Reminders</h3>
+                        <span class="bg-gray-600 text-white text-xs px-2 py-1 rounded">apple-reminders</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray mb-3">Create and manage reminders</p>
+                    <pre class="text-xs bg-spotify-black rounded p-2 text-spotify-green">{"tool": "apple-reminders", "action": "add", "title": "Call client", "due": "tomorrow"}</pre>
+                </div>
+
+                <div class="bg-spotify-gray rounded-lg p-4 hover:bg-spotify-light-gray transition-colors card-hover">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-spotify-text">Cron Jobs</h3>
+                        <span class="bg-green-600 text-white text-xs px-2 py-1 rounded">cron</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray mb-3">Schedule automated tasks</p>
+                    <pre class="text-xs bg-spotify-black rounded p-2 text-spotify-green">{"tool": "cron", "action": "add", "schedule": "0 9 * * *", "task": "daily_report"}</pre>
+                </div>
+
+                <div class="bg-spotify-gray rounded-lg p-4 hover:bg-spotify-light-gray transition-colors card-hover">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-spotify-text">Sessions Management</h3>
+                        <span class="bg-purple-500 text-white text-xs px-2 py-1 rounded">sessions</span>
+                    </div>
+                    <p class="text-sm text-spotify-text-gray mb-3">Spawn and manage sub-agents</p>
+                    <pre class="text-xs bg-spotify-black rounded p-2 text-spotify-green">{"tool": "sessions_spawn", "task": "research topic", "timeout": 300}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Usage Example -->
+    <div class="bg-spotify-dark rounded-2xl p-6">
+        <h2 class="text-xl font-semibold text-spotify-text mb-6">Usage Example</h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+                <h3 class="font-medium text-spotify-text mb-3">Request to InstaClaw</h3>
+                <pre class="bg-spotify-black rounded-lg p-4 text-sm text-spotify-green overflow-x-auto"><code>POST {{ request.url_root }}api/openclaw
+Content-Type: application/json
+X-API-Key: your_api_key_here
+
+{
+  "tools": [
+    {
+      "tool": "web_search",
+      "query": "latest AI developments",
+      "count": 5
+    },
+    {
+      "tool": "gog", 
+      "action": "send_email",
+      "to": "team@company.com",
+      "subject": "AI Research Summary",
+      "body": "Here are the latest developments..."
+    }
+  ]
+}</code></pre>
+            </div>
+            
+            <div>
+                <h3 class="font-medium text-spotify-text mb-3">Response from InstaClaw</h3>
+                <pre class="bg-spotify-black rounded-lg p-4 text-sm text-spotify-green overflow-x-auto"><code>{
+  "results": [
+    {
+      "tool": "web_search",
+      "success": true,
+      "data": [
+        {
+          "title": "New AI Model Released",
+          "url": "https://...",
+          "snippet": "..."
+        }
+      ]
+    },
+    {
+      "tool": "gog",
+      "success": true,
+      "message": "Email sent successfully"
+    }
+  ],
+  "execution_time": 2.3,
+  "tokens_used": 150,
+  "cost": 0.00045
+}</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="text-center">
+        <a href="/test" class="inline-flex items-center bg-spotify-green hover:bg-spotify-green-hover text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
+            <i class="fas fa-play mr-2"></i>
+            Test These Endpoints Now
+        </a>
+    </div>
+</div>
+{% endblock %}

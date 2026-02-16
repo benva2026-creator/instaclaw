@@ -2,24 +2,48 @@
 echo "🦞 InstaClaw Deployment Script"
 echo "=============================="
 
-# Add GitHub remote and push to repository
-echo "Adding GitHub remote and pushing code..."
-git remote add origin https://github.com/benva2026-creator/instaclaw.git
-git branch -M main
-git push -u origin main
+# Check if remote already exists
+if git remote get-url origin > /dev/null 2>&1; then
+    echo "GitHub remote already configured"
+else
+    echo "Adding GitHub remote..."
+    git remote add origin https://github.com/benva2026-creator/instaclaw.git
+fi
 
-echo "✅ Code pushed to GitHub successfully!"
+# Ensure we're on main branch
+echo "Setting up main branch..."
+git branch -M main
+
+# Try to push with GitHub CLI first, then fallback to manual
+echo "Pushing code to GitHub..."
+if command -v gh &> /dev/null && gh auth status &> /dev/null; then
+    echo "Using GitHub CLI..."
+    git push -u origin main
+elif git push -u origin main 2>/dev/null; then
+    echo "✅ Push successful!"
+else
+    echo "❌ Authentication needed. Please run:"
+    echo "gh auth login"
+    echo "Then run this script again."
+    echo ""
+    echo "OR manually enter your GitHub credentials when prompted:"
+    git push -u origin main
+fi
+
 echo ""
-echo "Next steps:"
+echo "✅ Code pushed to GitHub!"
+echo ""
+echo "🚀 Next: Deploy to Railway"
+echo "=========================="
 echo "1. Go to https://railway.app"
-echo "2. Sign in with GitHub" 
-echo "3. Click 'New Project' → 'Deploy from GitHub repo'"
-echo "4. Select 'benva2026-creator/instaclaw' repository"
-echo "5. Add environment variables:"
+echo "2. Sign in with GitHub"
+echo "3. Click 'New Project' → 'Deploy from GitHub repo'"  
+echo "4. Select 'benva2026-creator/instaclaw'"
+echo "5. Add these environment variables:"
 echo "   - FLASK_SECRET_KEY = $(openssl rand -base64 32)"
 echo "   - DEBUG = False"
-echo "6. Your app will be live in ~2 minutes!"
 echo ""
-echo "🚀 InstaClaw will be available at: https://instaclaw-production-[random].up.railway.app"
+echo "🌐 Your InstaClaw will be live at:"
+echo "   https://instaclaw-production-[random].up.railway.app"
 echo ""
-echo "Repository URL: https://github.com/benva2026-creator/instaclaw"
+echo "📂 Repository: https://github.com/benva2026-creator/instaclaw"

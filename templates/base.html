@@ -95,6 +95,31 @@
                         <span>API Test</span>
                     </a>
                     
+                    <a href="/endpoints" class="flex items-center space-x-3 text-spotify-text hover:text-spotify-green px-4 py-3 rounded-lg hover:bg-spotify-gray transition-all duration-200 {% if request.endpoint == 'endpoints' %}bg-spotify-gray text-spotify-green{% endif %}">
+                        <i class="fas fa-plug w-5"></i>
+                        <span>All Endpoints</span>
+                    </a>
+                    
+                    <a href="/integrations" class="flex items-center space-x-3 text-spotify-text hover:text-spotify-green px-4 py-3 rounded-lg hover:bg-spotify-gray transition-all duration-200 {% if request.endpoint == 'integrations' %}bg-spotify-gray text-spotify-green{% endif %}">
+                        <i class="fas fa-puzzle-piece w-5"></i>
+                        <span>Integrations</span>
+                    </a>
+                    
+                    <a href="/safeguards" class="flex items-center space-x-3 text-spotify-text hover:text-spotify-green px-4 py-3 rounded-lg hover:bg-spotify-gray transition-all duration-200 {% if request.endpoint == 'safeguards' %}bg-spotify-gray text-spotify-green{% endif %}">
+                        <i class="fas fa-shield-alt w-5"></i>
+                        <span>SafeGuards</span>
+                    </a>
+                    
+                    <a href="/skills" class="flex items-center space-x-3 text-spotify-text hover:text-spotify-green px-4 py-3 rounded-lg hover:bg-spotify-gray transition-all duration-200 {% if request.endpoint == 'skills_marketplace' %}bg-spotify-gray text-spotify-green{% endif %}">
+                        <i class="fas fa-shopping-cart w-5"></i>
+                        <span>Skills Store</span>
+                    </a>
+                    
+                    <a href="/community" class="flex items-center space-x-3 text-spotify-text hover:text-spotify-green px-4 py-3 rounded-lg hover:bg-spotify-gray transition-all duration-200 {% if request.endpoint == 'community' %}bg-spotify-gray text-spotify-green{% endif %}">
+                        <i class="fas fa-users w-5"></i>
+                        <span>Community</span>
+                    </a>
+                    
                     <a href="/analytics" class="flex items-center space-x-3 text-spotify-text hover:text-spotify-green px-4 py-3 rounded-lg hover:bg-spotify-gray transition-all duration-200 {% if request.endpoint == 'analytics' %}bg-spotify-gray text-spotify-green{% endif %}">
                         <i class="fas fa-chart-bar w-5"></i>
                         <span>Analytics</span>

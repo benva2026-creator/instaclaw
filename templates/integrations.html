@@ -1,0 +1,515 @@
+{% extends "base.html" %}
+
+{% block title %}Integrations{% endblock %}
+{% block header_title %}Integrations{% endblock %}
+
+{% block extra_head %}
+<style>
+    .integration-card {
+        transition: all 0.3s ease;
+    }
+    .integration-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(29, 185, 84, 0.15);
+    }
+    .connected {
+        border-color: #1db954;
+    }
+    .connected::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #1db954, #1ed760);
+        border-radius: 12px 12px 0 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header Section -->
+    <div class="bg-gradient-to-r from-spotify-green to-spotify-green-hover rounded-2xl p-8 text-white">
+        <div class="max-w-4xl">
+            <h1 class="text-3xl font-bold mb-4">🔌 Integrations</h1>
+            <p class="text-green-100 text-lg mb-6">
+                Connect your favorite services to InstaClaw. Set up API keys, configure webhooks, and unlock powerful automations.
+            </p>
+            <div class="flex flex-wrap gap-4">
+                <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                    <i class="fas fa-shield-alt mr-2"></i>
+                    Secure Storage
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                    <i class="fas fa-sync mr-2"></i>
+                    Auto-sync
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                    <i class="fas fa-bolt mr-2"></i>
+                    Real-time Updates
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Connected Services Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-spotify-dark rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-spotify-green">5</div>
+            <div class="text-sm text-spotify-text-gray">Connected</div>
+        </div>
+        <div class="bg-spotify-dark rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-yellow-500">3</div>
+            <div class="text-sm text-spotify-text-gray">Pending</div>
+        </div>
+        <div class="bg-spotify-dark rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-spotify-text">12</div>
+            <div class="text-sm text-spotify-text-gray">Available</div>
+        </div>
+        <div class="bg-spotify-dark rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-blue-400">847</div>
+            <div class="text-sm text-spotify-text-gray">API Calls Today</div>
+        </div>
+    </div>
+
+    <!-- Integration Categories -->
+    <div class="space-y-8">
+        
+        <!-- Communication -->
+        <div>
+            <h2 class="text-xl font-semibold text-spotify-text mb-4 flex items-center">
+                <i class="fas fa-comments text-spotify-green mr-3"></i>
+                Communication
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Gmail -->
+                <div class="bg-spotify-dark rounded-xl p-6 integration-card relative connected">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
+                                <i class="fab fa-google text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-spotify-text">Gmail</h3>
+                                <p class="text-xs text-spotify-text-gray">Google Workspace</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-spotify-green text-sm">
+                            <div class="w-2 h-2 bg-spotify-green rounded-full mr-2"></div>
+                            Connected
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Send emails, search inbox, manage labels and drafts.</p>
+                    
+                    <div class="space-y-2 text-xs text-spotify-text-gray">
+                        <div class="flex justify-between">
+                            <span>Last sync:</span>
+                            <span>2 mins ago</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>API calls today:</span>
+                            <span>47</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-2 mt-4">
+                        <button class="flex-1 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 px-3 rounded-lg text-sm transition-colors">
+                            Configure
+                        </button>
+                        <button class="px-3 py-2 text-spotify-text-gray hover:text-spotify-text transition-colors">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Slack -->
+                <div class="bg-spotify-dark rounded-xl p-6 integration-card relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                                <i class="fab fa-slack text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-spotify-text">Slack</h3>
+                                <p class="text-xs text-spotify-text-gray">Team Communication</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-spotify-text-gray text-sm">
+                            <div class="w-2 h-2 bg-spotify-text-gray rounded-full mr-2"></div>
+                            Not Connected
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Send messages, create channels, manage team communications.</p>
+                    
+                    <div class="space-y-2 text-xs text-spotify-text-gray">
+                        <div>• Send direct messages</div>
+                        <div>• Post to channels</div>
+                        <div>• Upload files</div>
+                    </div>
+                    
+                    <div class="flex space-x-2 mt-4">
+                        <button onclick="connectSlack()" class="flex-1 bg-spotify-green hover:bg-spotify-green-hover text-white py-2 px-3 rounded-lg text-sm transition-colors">
+                            Connect
+                        </button>
+                        <button class="px-3 py-2 text-spotify-text-gray hover:text-spotify-text transition-colors">
+                            <i class="fas fa-info"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Discord -->
+                <div class="bg-spotify-dark rounded-xl p-6 integration-card relative connected">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+                                <i class="fab fa-discord text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-spotify-text">Discord</h3>
+                                <p class="text-xs text-spotify-text-gray">Community Chat</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-spotify-green text-sm">
+                            <div class="w-2 h-2 bg-spotify-green rounded-full mr-2"></div>
+                            Connected
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Send messages to servers, manage bot interactions.</p>
+                    
+                    <div class="space-y-2 text-xs text-spotify-text-gray">
+                        <div class="flex justify-between">
+                            <span>Last message:</span>
+                            <span>1 hour ago</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Servers:</span>
+                            <span>3 connected</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-2 mt-4">
+                        <button class="flex-1 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 px-3 rounded-lg text-sm transition-colors">
+                            Configure
+                        </button>
+                        <button class="px-3 py-2 text-spotify-text-gray hover:text-spotify-text transition-colors">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Development -->
+        <div>
+            <h2 class="text-xl font-semibold text-spotify-text mb-4 flex items-center">
+                <i class="fas fa-code text-spotify-green mr-3"></i>
+                Development
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- GitHub -->
+                <div class="bg-spotify-dark rounded-xl p-6 integration-card relative connected">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center">
+                                <i class="fab fa-github text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-spotify-text">GitHub</h3>
+                                <p class="text-xs text-spotify-text-gray">Code Repository</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-spotify-green text-sm">
+                            <div class="w-2 h-2 bg-spotify-green rounded-full mr-2"></div>
+                            Connected
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Create issues, manage PRs, deploy code, check CI/CD.</p>
+                    
+                    <div class="space-y-2 text-xs text-spotify-text-gray">
+                        <div class="flex justify-between">
+                            <span>Repositories:</span>
+                            <span>12 accessible</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Last action:</span>
+                            <span>Push to main</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-2 mt-4">
+                        <button class="flex-1 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 px-3 rounded-lg text-sm transition-colors">
+                            Configure
+                        </button>
+                        <button class="px-3 py-2 text-spotify-text-gray hover:text-spotify-text transition-colors">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Docker Hub -->
+                <div class="bg-spotify-dark rounded-xl p-6 integration-card relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                                <i class="fab fa-docker text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-spotify-text">Docker Hub</h3>
+                                <p class="text-xs text-spotify-text-gray">Container Registry</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-spotify-text-gray text-sm">
+                            <div class="w-2 h-2 bg-spotify-text-gray rounded-full mr-2"></div>
+                            Not Connected
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Push/pull images, manage repositories, check build status.</p>
+                    
+                    <div class="space-y-2 text-xs text-spotify-text-gray">
+                        <div>• Automated builds</div>
+                        <div>• Image management</div>
+                        <div>• Registry webhooks</div>
+                    </div>
+                    
+                    <div class="flex space-x-2 mt-4">
+                        <button onclick="connectDocker()" class="flex-1 bg-spotify-green hover:bg-spotify-green-hover text-white py-2 px-3 rounded-lg text-sm transition-colors">
+                            Connect
+                        </button>
+                        <button class="px-3 py-2 text-spotify-text-gray hover:text-spotify-text transition-colors">
+                            <i class="fas fa-info"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- AWS -->
+                <div class="bg-spotify-dark rounded-xl p-6 integration-card relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+                                <i class="fab fa-aws text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-spotify-text">AWS</h3>
+                                <p class="text-xs text-spotify-text-gray">Cloud Services</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-yellow-500 text-sm">
+                            <div class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
+                            Configuring
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Manage EC2, S3, Lambda functions, and other AWS services.</p>
+                    
+                    <div class="space-y-2 text-xs text-spotify-text-gray">
+                        <div class="flex justify-between">
+                            <span>Region:</span>
+                            <span>us-east-1</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>IAM configured:</span>
+                            <span>50% complete</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-2 mt-4">
+                        <button class="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-3 rounded-lg text-sm transition-colors">
+                            Continue Setup
+                        </button>
+                        <button class="px-3 py-2 text-spotify-text-gray hover:text-spotify-text transition-colors">
+                            <i class="fas fa-question"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search & Data -->
+        <div>
+            <h2 class="text-xl font-semibold text-spotify-text mb-4 flex items-center">
+                <i class="fas fa-search text-spotify-green mr-3"></i>
+                Search & Data
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Brave Search -->
+                <div class="bg-spotify-dark rounded-xl p-6 integration-card relative connected">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-search text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-spotify-text">Brave Search</h3>
+                                <p class="text-xs text-spotify-text-gray">Web Search API</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-spotify-green text-sm">
+                            <div class="w-2 h-2 bg-spotify-green rounded-full mr-2"></div>
+                            Connected
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Search the web with privacy-focused Brave Search API.</p>
+                    
+                    <div class="space-y-2 text-xs text-spotify-text-gray">
+                        <div class="flex justify-between">
+                            <span>Searches today:</span>
+                            <span>324</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Rate limit:</span>
+                            <span>2,000/day</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-2 mt-4">
+                        <button class="flex-1 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 px-3 rounded-lg text-sm transition-colors">
+                            Configure
+                        </button>
+                        <button class="px-3 py-2 text-spotify-text-gray hover:text-spotify-text transition-colors">
+                            <i class="fas fa-chart-line"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- OpenAI -->
+                <div class="bg-spotify-dark rounded-xl p-6 integration-card relative connected">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-robot text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-spotify-text">OpenAI</h3>
+                                <p class="text-xs text-spotify-text-gray">AI Models</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-spotify-green text-sm">
+                            <div class="w-2 h-2 bg-spotify-green rounded-full mr-2"></div>
+                            Connected
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Access GPT models, DALL-E, Whisper, and Embeddings.</p>
+                    
+                    <div class="space-y-2 text-xs text-spotify-text-gray">
+                        <div class="flex justify-between">
+                            <span>Tokens used:</span>
+                            <span>45,230</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Models available:</span>
+                            <span>8</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-2 mt-4">
+                        <button class="flex-1 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 px-3 rounded-lg text-sm transition-colors">
+                            Configure
+                        </button>
+                        <button class="px-3 py-2 text-spotify-text-gray hover:text-spotify-text transition-colors">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Anthropic -->
+                <div class="bg-spotify-dark rounded-xl p-6 integration-card relative connected">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-brain text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-spotify-text">Anthropic</h3>
+                                <p class="text-xs text-spotify-text-gray">Claude Models</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-spotify-green text-sm">
+                            <div class="w-2 h-2 bg-spotify-green rounded-full mr-2"></div>
+                            Connected
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Access Claude models for advanced reasoning and analysis.</p>
+                    
+                    <div class="space-y-2 text-xs text-spotify-text-gray">
+                        <div class="flex justify-between">
+                            <span>Messages today:</span>
+                            <span>156</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Favorite model:</span>
+                            <span>Claude-3-Sonnet</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-2 mt-4">
+                        <button class="flex-1 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 px-3 rounded-lg text-sm transition-colors">
+                            Configure
+                        </button>
+                        <button class="px-3 py-2 text-spotify-text-gray hover:text-spotify-text transition-colors">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add New Integration -->
+    <div class="bg-spotify-dark rounded-2xl p-8 text-center">
+        <i class="fas fa-plus-circle text-4xl text-spotify-green mb-4"></i>
+        <h2 class="text-xl font-semibold text-spotify-text mb-2">Add Custom Integration</h2>
+        <p class="text-spotify-text-gray mb-6">Connect any API or service with custom webhook endpoints</p>
+        
+        <div class="flex justify-center space-x-4">
+            <button onclick="showCustomIntegration()" class="bg-spotify-green hover:bg-spotify-green-hover text-white px-6 py-2 rounded-lg transition-colors">
+                <i class="fas fa-plus mr-2"></i>
+                Add Custom API
+            </button>
+            <button onclick="showWebhookSetup()" class="bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text px-6 py-2 rounded-lg transition-colors">
+                <i class="fas fa-webhook mr-2"></i>
+                Setup Webhook
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Integration Setup Modals would go here -->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function connectSlack() {
+    showNotification('Redirecting to Slack OAuth...', 'info');
+    // In production, this would redirect to OAuth
+    setTimeout(() => {
+        showNotification('Slack integration connected!', 'success');
+    }, 2000);
+}
+
+function connectDocker() {
+    showNotification('Docker Hub setup initiated...', 'info');
+    // In production, this would open configuration modal
+}
+
+function showCustomIntegration() {
+    showNotification('Custom integration wizard coming soon!', 'info');
+}
+
+function showWebhookSetup() {
+    showNotification('Webhook configuration panel coming soon!', 'info');
+}
+</script>
+{% endblock %}

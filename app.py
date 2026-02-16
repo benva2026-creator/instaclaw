@@ -827,6 +827,89 @@ def admin():
                          daily_requests=daily_requests,
                          daily_revenue=daily_revenue)
 
+# New InstaClaw Platform Routes
+@app.route('/endpoints')
+@require_login
+def endpoints():
+    """All OpenClaw endpoints page"""
+    return render_template('endpoints.html')
+
+@app.route('/integrations')
+@require_login
+def integrations():
+    """Integrations management page"""
+    return render_template('integrations.html')
+
+@app.route('/safeguards')
+@require_login
+def safeguards():
+    """SafeGuards configuration page"""
+    return render_template('safeguards.html')
+
+@app.route('/skills')
+@require_login
+def skills_marketplace():
+    """Skills marketplace page"""
+    return render_template('skills_marketplace.html')
+
+@app.route('/community')
+@require_login
+def community():
+    """Community page"""
+    return render_template('community.html')
+
+@app.route('/api/openclaw', methods=['POST'])
+@require_api_key
+@limiter.limit("100 per hour")
+def openclaw_unified():
+    """Unified OpenClaw API endpoint"""
+    data = request.get_json()
+    
+    if not data or 'tools' not in data:
+        return jsonify({"error": "Tools array required"}), 400
+    
+    results = []
+    total_tokens = 0
+    total_cost = 0
+    
+    for tool_request in data['tools']:
+        tool_name = tool_request.get('tool')
+        if not tool_name:
+            continue
+            
+        # Mock execution - in production this would route to actual OpenClaw tools
+        mock_result = {
+            "tool": tool_name,
+            "success": True,
+            "data": f"Mock result from {tool_name}",
+            "tokens": 10,
+            "cost": 0.0001
+        }
+        
+        results.append(mock_result)
+        total_tokens += mock_result['tokens']
+        total_cost += mock_result['cost']
+    
+    # Log usage
+    conn = sqlite3.connect('llm_gateway.db')
+    c = conn.cursor()
+    c.execute("INSERT INTO usage_logs (user_id, provider, model, tokens, cost, endpoint, response_time, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+             (request.user_id, "openclaw", "unified-api", total_tokens, total_cost, "openclaw_unified", 1.2, datetime.now().isoformat()))
+    
+    # Update user token usage
+    c.execute("UPDATE users SET tokens_used = tokens_used + ? WHERE id = ?", 
+              (total_tokens, request.user_id))
+    
+    conn.commit()
+    conn.close()
+    
+    return jsonify({
+        "results": results,
+        "execution_time": 1.2,
+        "tokens_used": total_tokens,
+        "cost": total_cost
+    })
+
 # Health check endpoint
 @app.route('/health')
 def health_check():

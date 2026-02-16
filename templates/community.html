@@ -1,0 +1,589 @@
+{% extends "base.html" %}
+
+{% block title %}Community{% endblock %}
+{% block header_title %}Community{% endblock %}
+
+{% block extra_head %}
+<style>
+    .community-card {
+        transition: all 0.3s ease;
+        border: 1px solid #3e3e3e;
+    }
+    .community-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(29, 185, 84, 0.15);
+        border-color: #1db954;
+    }
+    .post-card {
+        transition: all 0.2s ease;
+    }
+    .post-card:hover {
+        background-color: #2a2a2a;
+    }
+    .upvote-btn {
+        transition: all 0.2s ease;
+    }
+    .upvote-btn:hover {
+        color: #1db954;
+    }
+    .upvote-btn.upvoted {
+        color: #1db954;
+        background-color: rgba(29, 185, 84, 0.1);
+    }
+    .online-indicator {
+        position: relative;
+    }
+    .online-indicator::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 12px;
+        height: 12px;
+        background-color: #22c55e;
+        border: 2px solid #1e1e1e;
+        border-radius: 50%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header Section -->
+    <div class="bg-gradient-to-r from-spotify-green to-spotify-green-hover rounded-2xl p-8 text-white">
+        <div class="max-w-4xl">
+            <h1 class="text-3xl font-bold mb-4">👥 InstaClaw Community</h1>
+            <p class="text-green-100 text-lg mb-6">
+                Connect with fellow InstaClaw users, share automations, get help, and discover new ways to supercharge your workflows.
+            </p>
+            <div class="flex flex-wrap gap-4">
+                <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                    <i class="fas fa-users mr-2"></i>
+                    12,847 Members
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                    <i class="fas fa-comments mr-2"></i>
+                    342 Active Today
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                    <i class="fas fa-lightbulb mr-2"></i>
+                    1,234 Solutions
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                    <i class="fas fa-star mr-2"></i>
+                    89 Skills Shared
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Community Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-spotify-dark rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-spotify-green">2,847</div>
+            <div class="text-sm text-spotify-text-gray">New Posts</div>
+        </div>
+        <div class="bg-spotify-dark rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-blue-400">1,234</div>
+            <div class="text-sm text-spotify-text-gray">Solutions</div>
+        </div>
+        <div class="bg-spotify-dark rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-yellow-500">89</div>
+            <div class="text-sm text-spotify-text-gray">Experts</div>
+        </div>
+        <div class="bg-spotify-dark rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-purple-400">4.8</div>
+            <div class="text-sm text-spotify-text-gray">Avg Rating</div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            <!-- Create Post -->
+            <div class="bg-spotify-dark rounded-2xl p-6">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="w-10 h-10 bg-spotify-green rounded-full flex items-center justify-center">
+                        <span class="text-spotify-black font-semibold">U</span>
+                    </div>
+                    <div class="flex-1">
+                        <textarea placeholder="Share your automation idea, ask for help, or showcase your skill..." 
+                                  class="w-full bg-spotify-gray text-spotify-text border border-spotify-light-gray rounded-lg px-4 py-3 focus:outline-none focus:border-spotify-green resize-none"
+                                  rows="3"></textarea>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <button class="flex items-center space-x-2 text-spotify-text-gray hover:text-spotify-green transition-colors">
+                            <i class="fas fa-image"></i>
+                            <span class="text-sm">Image</span>
+                        </button>
+                        <button class="flex items-center space-x-2 text-spotify-text-gray hover:text-spotify-green transition-colors">
+                            <i class="fas fa-code"></i>
+                            <span class="text-sm">Code</span>
+                        </button>
+                        <button class="flex items-center space-x-2 text-spotify-text-gray hover:text-spotify-green transition-colors">
+                            <i class="fas fa-poll"></i>
+                            <span class="text-sm">Poll</span>
+                        </button>
+                    </div>
+                    
+                    <button onclick="createPost()" class="bg-spotify-green hover:bg-spotify-green-hover text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                        Post
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="bg-spotify-dark rounded-2xl p-1 flex space-x-1">
+                <button onclick="filterPosts('trending')" class="flex-1 py-3 px-4 bg-spotify-green text-white rounded-xl font-medium transition-colors" id="trending-tab">
+                    <i class="fas fa-fire mr-2"></i>Trending
+                </button>
+                <button onclick="filterPosts('recent')" class="flex-1 py-3 px-4 text-spotify-text hover:bg-spotify-gray rounded-xl transition-colors" id="recent-tab">
+                    <i class="fas fa-clock mr-2"></i>Recent
+                </button>
+                <button onclick="filterPosts('solved')" class="flex-1 py-3 px-4 text-spotify-text hover:bg-spotify-gray rounded-xl transition-colors" id="solved-tab">
+                    <i class="fas fa-check mr-2"></i>Solved
+                </button>
+                <button onclick="filterPosts('questions')" class="flex-1 py-3 px-4 text-spotify-text hover:bg-spotify-gray rounded-xl transition-colors" id="questions-tab">
+                    <i class="fas fa-question mr-2"></i>Questions
+                </button>
+            </div>
+
+            <!-- Posts Feed -->
+            <div class="space-y-4" id="posts-feed">
+                <!-- Featured Post -->
+                <div class="bg-spotify-dark rounded-2xl p-6 post-card border-l-4 border-yellow-500">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 online-indicator">
+                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face&auto=format" 
+                                     alt="Alex Chen" class="w-full h-full rounded-full object-cover">
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-spotify-text">Alex Chen</h4>
+                                <p class="text-xs text-spotify-text-gray">Community Expert • 2 hours ago</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-yellow-500 text-black text-xs px-2 py-1 rounded font-semibold">PINNED</span>
+                            <button class="text-spotify-text-gray hover:text-spotify-text">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-lg font-semibold text-spotify-text mb-2">
+                        🚀 Advanced Email Automation with Gmail + AI - Complete Guide
+                    </h3>
+                    <p class="text-spotify-text-gray mb-4">
+                        I've created a comprehensive automation that processes emails, extracts key information using AI, and automatically responds or forwards based on content analysis. This has saved me 3+ hours daily...
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded">Email</span>
+                        <span class="bg-green-600 text-white text-xs px-2 py-1 rounded">AI</span>
+                        <span class="bg-purple-600 text-white text-xs px-2 py-1 rounded">Automation</span>
+                        <span class="bg-orange-600 text-white text-xs px-2 py-1 rounded">Tutorial</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-6">
+                            <button onclick="toggleUpvote(this)" class="upvote-btn flex items-center space-x-2 text-spotify-text-gray hover:text-spotify-green transition-colors px-2 py-1 rounded">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>247</span>
+                            </button>
+                            <button class="flex items-center space-x-2 text-spotify-text-gray hover:text-spotify-green transition-colors">
+                                <i class="fas fa-comment"></i>
+                                <span>43</span>
+                            </button>
+                            <button class="flex items-center space-x-2 text-spotify-text-gray hover:text-spotify-green transition-colors">
+                                <i class="fas fa-share"></i>
+                                <span>12</span>
+                            </button>
+                        </div>
+                        <button onclick="savePost(this)" class="text-spotify-text-gray hover:text-yellow-500 transition-colors">
+                            <i class="fas fa-bookmark"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Regular Posts -->
+                <div class="bg-spotify-dark rounded-2xl p-6 post-card">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10">
+                                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b93c?w=40&h=40&fit=crop&crop=face&auto=format" 
+                                     alt="Sarah Johnson" class="w-full h-full rounded-full object-cover">
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-spotify-text">Sarah Johnson</h4>
+                                <p class="text-xs text-spotify-text-gray">4 hours ago</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-red-600 text-white text-xs px-2 py-1 rounded">QUESTION</span>
+                            <button class="text-spotify-text-gray hover:text-spotify-text">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-lg font-semibold text-spotify-text mb-2">
+                        How to handle rate limiting with multiple APIs?
+                    </h3>
+                    <p class="text-spotify-text-gray mb-4">
+                        I'm building a workflow that needs to call OpenAI, Google, and Slack APIs simultaneously. Running into rate limits frequently. Any suggestions for queue management or retry strategies?
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-red-600 text-white text-xs px-2 py-1 rounded">Help Needed</span>
+                        <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded">APIs</span>
+                        <span class="bg-yellow-600 text-white text-xs px-2 py-1 rounded">Rate Limiting</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-6">
+                            <button onclick="toggleUpvote(this)" class="upvote-btn flex items-center space-x-2 text-spotify-text-gray hover:text-spotify-green transition-colors px-2 py-1 rounded">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>23</span>
+                            </button>
+                            <button class="flex items-center space-x-2 text-spotify-text-gray hover:text-spotify-green transition-colors">
+                                <i class="fas fa-comment"></i>
+                                <span>8</span>
+                            </button>
+                            <button class="flex items-center space-x-2 text-spotify-text-gray hover:text-spotify-green transition-colors">
+                                <i class="fas fa-share"></i>
+                                <span>2</span>
+                            </button>
+                        </div>
+                        <button onclick="savePost(this)" class="text-spotify-text-gray hover:text-yellow-500 transition-colors">
+                            <i class="fas fa-bookmark"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-spotify-dark rounded-2xl p-6 post-card">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 online-indicator">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face&auto=format" 
+                                     alt="Mike Torres" class="w-full h-full rounded-full object-cover">
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-spotify-text">Mike Torres</h4>
+                                <p class="text-xs text-spotify-text-gray">6 hours ago</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-green-600 text-white text-xs px-2 py-1 rounded">SHOWCASE</span>
+                            <button class="text-spotify-text-gray hover:text-spotify-text">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-lg font-semibold text-spotify-text mb-2">
+                        📊 Built a real-time dashboard for Instagram analytics
+                    </h3>
+                    <p class="text-spotify-text-gray mb-4">
+                        Using InstaClaw's web scraping + data analysis skills, I created a dashboard that tracks Instagram engagement in real-time. Includes follower growth, post performance, and competitor analysis.
+                    </p>
+                    
+                    <div class="bg-spotify-gray rounded-lg p-3 mb-4">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <i class="fas fa-code text-spotify-green"></i>
+                            <span class="text-sm font-medium text-spotify-text">instagram_dashboard.py</span>
+                        </div>
+                        <pre class="text-xs text-spotify-text-gray overflow-x-auto">
+# Sample code snippet
+async def fetch_instagram_metrics():
+    data = await instaclaw.web_scrape(
+        url="instagram.com/profile", 
+        extract=["followers", "posts", "engagement"]
+    )
+    return await instaclaw.analyze_data(data)
+                        </pre>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-pink-600 text-white text-xs px-2 py-1 rounded">Instagram</span>
+                        <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded">Analytics</span>
+                        <span class="bg-purple-600 text-white text-xs px-2 py-1 rounded">Dashboard</span>
+                        <span class="bg-green-600 text-white text-xs px-2 py-1 rounded">Showcase</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-6">
+                            <button onclick="toggleUpvote(this)" class="upvote-btn upvoted flex items-center space-x-2 px-2 py-1 rounded">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>87</span>
+                            </button>
+                            <button class="flex items-center space-x-2 text-spotify-text-gray hover:text-spotify-green transition-colors">
+                                <i class="fas fa-comment"></i>
+                                <span>19</span>
+                            </button>
+                            <button class="flex items-center space-x-2 text-spotify-text-gray hover:text-spotify-green transition-colors">
+                                <i class="fas fa-share"></i>
+                                <span>7</span>
+                            </button>
+                        </div>
+                        <button onclick="savePost(this)" class="text-yellow-500">
+                            <i class="fas fa-bookmark"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load More -->
+            <div class="text-center">
+                <button onclick="loadMorePosts()" class="bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text px-6 py-3 rounded-lg transition-colors">
+                    <i class="fas fa-chevron-down mr-2"></i>
+                    Load More Posts
+                </button>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            
+            <!-- Quick Stats -->
+            <div class="bg-spotify-dark rounded-2xl p-6">
+                <h3 class="text-lg font-semibold text-spotify-text mb-4">Your Activity</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-spotify-text-gray">Posts created</span>
+                        <span class="font-semibold text-spotify-text">12</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-spotify-text-gray">Solutions provided</span>
+                        <span class="font-semibold text-spotify-text">8</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-spotify-text-gray">Community score</span>
+                        <span class="font-semibold text-spotify-green">147</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-spotify-text-gray">Reputation</span>
+                        <div class="flex items-center space-x-1">
+                            <i class="fas fa-star text-yellow-500"></i>
+                            <i class="fas fa-star text-yellow-500"></i>
+                            <i class="fas fa-star text-yellow-500"></i>
+                            <i class="fas fa-star text-yellow-500"></i>
+                            <i class="fas fa-star text-spotify-gray"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="viewProfile()" class="w-full mt-4 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 rounded-lg transition-colors">
+                    View Full Profile
+                </button>
+            </div>
+
+            <!-- Top Contributors -->
+            <div class="bg-spotify-dark rounded-2xl p-6">
+                <h3 class="text-lg font-semibold text-spotify-text mb-4">Top Contributors</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 online-indicator">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face&auto=format" 
+                                 alt="Alex Chen" class="w-full h-full rounded-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <h5 class="font-medium text-spotify-text">Alex Chen</h5>
+                            <p class="text-xs text-spotify-text-gray">1,234 solutions</p>
+                        </div>
+                        <div class="text-yellow-500">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop&crop=face&auto=format" 
+                                 alt="Mike Torres" class="w-full h-full rounded-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <h5 class="font-medium text-spotify-text">Mike Torres</h5>
+                            <p class="text-xs text-spotify-text-gray">892 solutions</p>
+                        </div>
+                        <div class="text-gray-400">
+                            <i class="fas fa-medal"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 online-indicator">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b93c?w=32&h=32&fit=crop&crop=face&auto=format" 
+                                 alt="Sarah Johnson" class="w-full h-full rounded-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <h5 class="font-medium text-spotify-text">Sarah Johnson</h5>
+                            <p class="text-xs text-spotify-text-gray">567 solutions</p>
+                        </div>
+                        <div class="text-amber-600">
+                            <i class="fas fa-award"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="viewLeaderboard()" class="w-full mt-4 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 rounded-lg transition-colors">
+                    View Leaderboard
+                </button>
+            </div>
+
+            <!-- Popular Tags -->
+            <div class="bg-spotify-dark rounded-2xl p-6">
+                <h3 class="text-lg font-semibold text-spotify-text mb-4">Trending Tags</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span class="bg-spotify-green text-white text-xs px-3 py-1 rounded-full cursor-pointer hover:bg-spotify-green-hover transition-colors">#automation</span>
+                    <span class="bg-blue-600 text-white text-xs px-3 py-1 rounded-full cursor-pointer hover:bg-blue-700 transition-colors">#api</span>
+                    <span class="bg-purple-600 text-white text-xs px-3 py-1 rounded-full cursor-pointer hover:bg-purple-700 transition-colors">#ai</span>
+                    <span class="bg-red-600 text-white text-xs px-3 py-1 rounded-full cursor-pointer hover:bg-red-700 transition-colors">#help</span>
+                    <span class="bg-orange-600 text-white text-xs px-3 py-1 rounded-full cursor-pointer hover:bg-orange-700 transition-colors">#tutorial</span>
+                    <span class="bg-yellow-600 text-white text-xs px-3 py-1 rounded-full cursor-pointer hover:bg-yellow-700 transition-colors">#showcase</span>
+                    <span class="bg-pink-600 text-white text-xs px-3 py-1 rounded-full cursor-pointer hover:bg-pink-700 transition-colors">#social</span>
+                    <span class="bg-teal-600 text-white text-xs px-3 py-1 rounded-full cursor-pointer hover:bg-teal-700 transition-colors">#workflow</span>
+                </div>
+            </div>
+
+            <!-- Community Events -->
+            <div class="bg-spotify-dark rounded-2xl p-6">
+                <h3 class="text-lg font-semibold text-spotify-text mb-4">Upcoming Events</h3>
+                <div class="space-y-4">
+                    <div class="border-l-4 border-spotify-green pl-4">
+                        <h5 class="font-medium text-spotify-text">InstaClaw Masterclass</h5>
+                        <p class="text-xs text-spotify-text-gray">Feb 20, 2026 • 2:00 PM EST</p>
+                        <p class="text-xs text-spotify-text-gray mt-1">Advanced automation techniques</p>
+                    </div>
+                    
+                    <div class="border-l-4 border-blue-500 pl-4">
+                        <h5 class="font-medium text-spotify-text">Community Q&A</h5>
+                        <p class="text-xs text-spotify-text-gray">Feb 25, 2026 • 7:00 PM EST</p>
+                        <p class="text-xs text-spotify-text-gray mt-1">Ask the experts anything</p>
+                    </div>
+                    
+                    <div class="border-l-4 border-purple-500 pl-4">
+                        <h5 class="font-medium text-spotify-text">Skill Building Contest</h5>
+                        <p class="text-xs text-spotify-text-gray">Mar 1-15, 2026</p>
+                        <p class="text-xs text-spotify-text-gray mt-1">$1,000 prize pool</p>
+                    </div>
+                </div>
+                
+                <button onclick="viewAllEvents()" class="w-full mt-4 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 rounded-lg transition-colors">
+                    View All Events
+                </button>
+            </div>
+
+            <!-- Discord Widget -->
+            <div class="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
+                <div class="flex items-center mb-3">
+                    <i class="fab fa-discord text-2xl mr-3"></i>
+                    <h3 class="text-lg font-semibold">Join Our Discord</h3>
+                </div>
+                <p class="text-indigo-100 text-sm mb-4">
+                    Get instant help, chat with the community, and stay updated on the latest features.
+                </p>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="text-sm">
+                        <div class="font-semibold">2,847 members</div>
+                        <div class="text-indigo-200">342 online</div>
+                    </div>
+                    <div class="text-green-400">
+                        <i class="fas fa-circle text-xs mr-1"></i>
+                        <span class="text-sm">Active</span>
+                    </div>
+                </div>
+                <button onclick="joinDiscord()" class="w-full bg-white text-indigo-600 hover:bg-gray-100 py-2 rounded-lg font-medium transition-colors">
+                    Join Discord
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function createPost() {
+    const textarea = document.querySelector('textarea');
+    if (!textarea.value.trim()) {
+        showNotification('Please enter some content for your post', 'warning');
+        return;
+    }
+    
+    showNotification('Creating post...', 'info');
+    setTimeout(() => {
+        textarea.value = '';
+        showNotification('Post created successfully!', 'success');
+    }, 1000);
+}
+
+function filterPosts(filter) {
+    // Remove active class from all tabs
+    document.querySelectorAll('[id$="-tab"]').forEach(tab => {
+        tab.classList.remove('bg-spotify-green', 'text-white');
+        tab.classList.add('text-spotify-text', 'hover:bg-spotify-gray');
+    });
+    
+    // Add active class to selected tab
+    const activeTab = document.getElementById(filter + '-tab');
+    activeTab.classList.add('bg-spotify-green', 'text-white');
+    activeTab.classList.remove('text-spotify-text', 'hover:bg-spotify-gray');
+    
+    showNotification(`Filtering by ${filter} posts...`, 'info');
+}
+
+function toggleUpvote(button) {
+    const isUpvoted = button.classList.contains('upvoted');
+    const countSpan = button.querySelector('span');
+    let count = parseInt(countSpan.textContent);
+    
+    if (isUpvoted) {
+        button.classList.remove('upvoted');
+        count--;
+    } else {
+        button.classList.add('upvoted');
+        count++;
+    }
+    
+    countSpan.textContent = count;
+}
+
+function savePost(button) {
+    const isSaved = button.classList.contains('text-yellow-500');
+    
+    if (isSaved) {
+        button.classList.remove('text-yellow-500');
+        button.classList.add('text-spotify-text-gray');
+        showNotification('Post removed from saved', 'info');
+    } else {
+        button.classList.remove('text-spotify-text-gray');
+        button.classList.add('text-yellow-500');
+        showNotification('Post saved!', 'success');
+    }
+}
+
+function loadMorePosts() {
+    showNotification('Loading more posts...', 'info');
+}
+
+function viewProfile() {
+    showNotification('Opening your profile...', 'info');
+}
+
+function viewLeaderboard() {
+    showNotification('Opening community leaderboard...', 'info');
+}
+
+function viewAllEvents() {
+    showNotification('Loading community events...', 'info');
+}
+
+function joinDiscord() {
+    showNotification('Redirecting to Discord server...', 'info');
+}
+</script>
+{% endblock %}

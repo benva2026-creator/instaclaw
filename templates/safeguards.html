@@ -1,0 +1,495 @@
+{% extends "base.html" %}
+
+{% block title %}SafeGuards{% endblock %}
+{% block header_title %}SafeGuards{% endblock %}
+
+{% block extra_head %}
+<style>
+    .safeguard-toggle {
+        transition: all 0.3s ease;
+    }
+    .safeguard-enabled {
+        background: linear-gradient(135deg, #1db954, #1ed760);
+        box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
+    }
+    .safeguard-disabled {
+        background: #3e3e3e;
+    }
+    .risk-level-low { border-left: 4px solid #22c55e; }
+    .risk-level-medium { border-left: 4px solid #f59e0b; }
+    .risk-level-high { border-left: 4px solid #ef4444; }
+    .risk-level-critical { border-left: 4px solid #dc2626; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header Section -->
+    <div class="bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl p-8 text-white">
+        <div class="max-w-4xl">
+            <h1 class="text-3xl font-bold mb-4">🛡️ SafeGuards</h1>
+            <p class="text-red-100 text-lg mb-6">
+                Configure security policies, content filters, and access controls to keep your InstaClaw deployment safe and compliant.
+            </p>
+            <div class="flex flex-wrap gap-4">
+                <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                    <i class="fas fa-shield-check mr-2"></i>
+                    AI Safety
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                    <i class="fas fa-lock mr-2"></i>
+                    Data Protection
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                    <i class="fas fa-eye mr-2"></i>
+                    Content Monitoring
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                    <i class="fas fa-balance-scale mr-2"></i>
+                    Compliance
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Status Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-spotify-dark rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-green-500">Secure</div>
+            <div class="text-sm text-spotify-text-gray">Overall Status</div>
+        </div>
+        <div class="bg-spotify-dark rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-spotify-green">8/10</div>
+            <div class="text-sm text-spotify-text-gray">Active Guards</div>
+        </div>
+        <div class="bg-spotify-dark rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-yellow-500">2</div>
+            <div class="text-sm text-spotify-text-gray">Warnings</div>
+        </div>
+        <div class="bg-spotify-dark rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-red-500">0</div>
+            <div class="text-sm text-spotify-text-gray">Blocked Today</div>
+        </div>
+    </div>
+
+    <!-- SafeGuard Categories -->
+    <div class="space-y-8">
+        
+        <!-- Content Safety -->
+        <div>
+            <h2 class="text-xl font-semibold text-spotify-text mb-4 flex items-center">
+                <i class="fas fa-filter text-red-500 mr-3"></i>
+                Content Safety
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Harmful Content Filter -->
+                <div class="bg-spotify-dark rounded-xl p-6 risk-level-high">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-semibold text-spotify-text">Harmful Content Filter</h3>
+                            <p class="text-xs text-red-400">High Risk</p>
+                        </div>
+                        <div class="safeguard-toggle safeguard-enabled w-12 h-6 rounded-full relative cursor-pointer" onclick="toggleSafeguard(this)">
+                            <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 transition-all"></div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Block generation of harmful, violent, or inappropriate content.</p>
+                    
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between text-spotify-text-gray">
+                            <span>Sensitivity Level:</span>
+                            <select class="bg-spotify-gray text-spotify-text rounded px-2 py-1">
+                                <option>High</option>
+                                <option>Medium</option>
+                                <option>Low</option>
+                            </select>
+                        </div>
+                        <div class="flex justify-between text-spotify-text-gray">
+                            <span>Blocked today:</span>
+                            <span class="text-red-400">0</span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="configureContentFilter()" class="w-full mt-4 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 rounded-lg text-sm transition-colors">
+                        Configure Filters
+                    </button>
+                </div>
+
+                <!-- Personal Info Protection -->
+                <div class="bg-spotify-dark rounded-xl p-6 risk-level-high">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-semibold text-spotify-text">Personal Info Protection</h3>
+                            <p class="text-xs text-red-400">High Risk</p>
+                        </div>
+                        <div class="safeguard-toggle safeguard-enabled w-12 h-6 rounded-full relative cursor-pointer" onclick="toggleSafeguard(this)">
+                            <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 transition-all"></div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Prevent exposure of sensitive personal information and credentials.</p>
+                    
+                    <div class="space-y-2 text-xs">
+                        <div class="text-spotify-text-gray">• Email addresses</div>
+                        <div class="text-spotify-text-gray">• Phone numbers</div>
+                        <div class="text-spotify-text-gray">• API keys & passwords</div>
+                        <div class="text-spotify-text-gray">• Social security numbers</div>
+                    </div>
+                    
+                    <button onclick="configurePrivacy()" class="w-full mt-4 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 rounded-lg text-sm transition-colors">
+                        Configure Privacy
+                    </button>
+                </div>
+
+                <!-- Content Moderation -->
+                <div class="bg-spotify-dark rounded-xl p-6 risk-level-medium">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-semibold text-spotify-text">Content Moderation</h3>
+                            <p class="text-xs text-yellow-500">Medium Risk</p>
+                        </div>
+                        <div class="safeguard-toggle safeguard-enabled w-12 h-6 rounded-full relative cursor-pointer" onclick="toggleSafeguard(this)">
+                            <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 transition-all"></div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Automatically review and flag inappropriate content before processing.</p>
+                    
+                    <div class="space-y-2 text-xs text-spotify-text-gray">
+                        <div class="flex justify-between">
+                            <span>Auto-review:</span>
+                            <span class="text-spotify-green">Enabled</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Human review:</span>
+                            <span class="text-yellow-500">When flagged</span>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full mt-4 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 rounded-lg text-sm transition-colors">
+                        Review Settings
+                    </button>
+                </div>
+
+                <!-- Profanity Filter -->
+                <div class="bg-spotify-dark rounded-xl p-6 risk-level-low">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-semibold text-spotify-text">Profanity Filter</h3>
+                            <p class="text-xs text-green-400">Low Risk</p>
+                        </div>
+                        <div class="safeguard-toggle safeguard-disabled w-12 h-6 rounded-full relative cursor-pointer" onclick="toggleSafeguard(this)">
+                            <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 transition-all"></div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Filter out profanity and offensive language from inputs and outputs.</p>
+                    
+                    <div class="space-y-2 text-xs text-spotify-text-gray">
+                        <div>Currently disabled for developer usage</div>
+                        <div>Can be enabled per-client basis</div>
+                    </div>
+                    
+                    <button class="w-full mt-4 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 rounded-lg text-sm transition-colors">
+                        Configure Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Access Control -->
+        <div>
+            <h2 class="text-xl font-semibold text-spotify-text mb-4 flex items-center">
+                <i class="fas fa-user-shield text-blue-500 mr-3"></i>
+                Access Control
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Rate Limiting -->
+                <div class="bg-spotify-dark rounded-xl p-6 risk-level-medium">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-semibold text-spotify-text">Rate Limiting</h3>
+                            <p class="text-xs text-yellow-500">Medium Risk</p>
+                        </div>
+                        <div class="safeguard-toggle safeguard-enabled w-12 h-6 rounded-full relative cursor-pointer" onclick="toggleSafeguard(this)">
+                            <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 transition-all"></div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Prevent abuse by limiting API requests per user and time period.</p>
+                    
+                    <div class="space-y-3">
+                        <div class="text-xs">
+                            <div class="flex justify-between mb-1">
+                                <span class="text-spotify-text-gray">Requests per hour:</span>
+                                <span class="text-spotify-text">1,000</span>
+                            </div>
+                            <div class="w-full bg-spotify-gray rounded-full h-2">
+                                <div class="bg-spotify-green h-2 rounded-full" style="width: 35%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-xs">
+                            <div class="flex justify-between mb-1">
+                                <span class="text-spotify-text-gray">Tokens per day:</span>
+                                <span class="text-spotify-text">100,000</span>
+                            </div>
+                            <div class="w-full bg-spotify-gray rounded-full h-2">
+                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 67%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="configureRateLimit()" class="w-full mt-4 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 rounded-lg text-sm transition-colors">
+                        Adjust Limits
+                    </button>
+                </div>
+
+                <!-- IP Whitelisting -->
+                <div class="bg-spotify-dark rounded-xl p-6 risk-level-high">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-semibold text-spotify-text">IP Whitelisting</h3>
+                            <p class="text-xs text-red-400">High Risk</p>
+                        </div>
+                        <div class="safeguard-toggle safeguard-disabled w-12 h-6 rounded-full relative cursor-pointer" onclick="toggleSafeguard(this)">
+                            <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 transition-all"></div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Restrict API access to specific IP addresses or ranges.</p>
+                    
+                    <div class="space-y-2 text-xs text-spotify-text-gray">
+                        <div>Currently allowing all IPs</div>
+                        <div class="text-red-400">⚠️ Consider enabling for production</div>
+                    </div>
+                    
+                    <button onclick="configureIPWhitelist()" class="w-full mt-4 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg text-sm transition-colors">
+                        Setup Whitelist
+                    </button>
+                </div>
+
+                <!-- API Key Rotation -->
+                <div class="bg-spotify-dark rounded-xl p-6 risk-level-medium">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-semibold text-spotify-text">API Key Rotation</h3>
+                            <p class="text-xs text-yellow-500">Medium Risk</p>
+                        </div>
+                        <div class="safeguard-toggle safeguard-enabled w-12 h-6 rounded-full relative cursor-pointer" onclick="toggleSafeguard(this)">
+                            <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 transition-all"></div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Automatically rotate API keys at regular intervals for enhanced security.</p>
+                    
+                    <div class="space-y-2 text-xs text-spotify-text-gray">
+                        <div class="flex justify-between">
+                            <span>Rotation period:</span>
+                            <span>90 days</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Last rotation:</span>
+                            <span>23 days ago</span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="configureRotation()" class="w-full mt-4 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 rounded-lg text-sm transition-colors">
+                        Configure Rotation
+                    </button>
+                </div>
+
+                <!-- Session Management -->
+                <div class="bg-spotify-dark rounded-xl p-6 risk-level-low">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-semibold text-spotify-text">Session Management</h3>
+                            <p class="text-xs text-green-400">Low Risk</p>
+                        </div>
+                        <div class="safeguard-toggle safeguard-enabled w-12 h-6 rounded-full relative cursor-pointer" onclick="toggleSafeguard(this)">
+                            <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 transition-all"></div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Manage active sessions and implement timeout policies.</p>
+                    
+                    <div class="space-y-2 text-xs text-spotify-text-gray">
+                        <div class="flex justify-between">
+                            <span>Session timeout:</span>
+                            <span>2 hours</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Active sessions:</span>
+                            <span>12</span>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full mt-4 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 rounded-lg text-sm transition-colors">
+                        View Sessions
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Compliance & Monitoring -->
+        <div>
+            <h2 class="text-xl font-semibold text-spotify-text mb-4 flex items-center">
+                <i class="fas fa-clipboard-check text-green-500 mr-3"></i>
+                Compliance & Monitoring
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Audit Logging -->
+                <div class="bg-spotify-dark rounded-xl p-6 risk-level-critical">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-semibold text-spotify-text">Audit Logging</h3>
+                            <p class="text-xs text-red-600">Critical</p>
+                        </div>
+                        <div class="safeguard-toggle safeguard-enabled w-12 h-6 rounded-full relative cursor-pointer" onclick="toggleSafeguard(this)">
+                            <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 transition-all"></div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Log all API requests, responses, and system events for compliance and debugging.</p>
+                    
+                    <div class="space-y-2 text-xs text-spotify-text-gray">
+                        <div class="flex justify-between">
+                            <span>Log retention:</span>
+                            <span>90 days</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Storage used:</span>
+                            <span>2.3 GB</span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="viewAuditLogs()" class="w-full mt-4 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 rounded-lg text-sm transition-colors">
+                        View Logs
+                    </button>
+                </div>
+
+                <!-- GDPR Compliance -->
+                <div class="bg-spotify-dark rounded-xl p-6 risk-level-high">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-semibold text-spotify-text">GDPR Compliance</h3>
+                            <p class="text-xs text-red-400">High Risk</p>
+                        </div>
+                        <div class="safeguard-toggle safeguard-enabled w-12 h-6 rounded-full relative cursor-pointer" onclick="toggleSafeguard(this)">
+                            <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 transition-all"></div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-spotify-text-gray mb-4">Ensure compliance with European data protection regulations.</p>
+                    
+                    <div class="space-y-2 text-xs text-spotify-text-gray">
+                        <div>• Right to be forgotten</div>
+                        <div>• Data portability</div>
+                        <div>• Consent management</div>
+                        <div>• Breach notification</div>
+                    </div>
+                    
+                    <button onclick="configureGDPR()" class="w-full mt-4 bg-spotify-gray hover:bg-spotify-light-gray text-spotify-text py-2 rounded-lg text-sm transition-colors">
+                        GDPR Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SafeGuard Recommendations -->
+    <div class="bg-spotify-dark rounded-2xl p-6">
+        <h2 class="text-xl font-semibold text-spotify-text mb-4 flex items-center">
+            <i class="fas fa-lightbulb text-yellow-500 mr-3"></i>
+            Security Recommendations
+        </h2>
+        
+        <div class="space-y-4">
+            <div class="bg-yellow-900 bg-opacity-30 border-l-4 border-yellow-500 p-4 rounded">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle text-yellow-500 mr-3"></i>
+                    <div>
+                        <h4 class="font-medium text-spotify-text">Enable IP Whitelisting</h4>
+                        <p class="text-sm text-spotify-text-gray mt-1">Consider restricting API access to known IP addresses in production</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-red-900 bg-opacity-30 border-l-4 border-red-500 p-4 rounded">
+                <div class="flex items-center">
+                    <i class="fas fa-shield-alt text-red-500 mr-3"></i>
+                    <div>
+                        <h4 class="font-medium text-spotify-text">Review Content Filters</h4>
+                        <p class="text-sm text-spotify-text-gray mt-1">Update your harmful content filters to match current threat landscape</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-green-900 bg-opacity-30 border-l-4 border-green-500 p-4 rounded">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                    <div>
+                        <h4 class="font-medium text-spotify-text">Good Security Posture</h4>
+                        <p class="text-sm text-spotify-text-gray mt-1">Your current SafeGuard configuration provides strong protection</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleSafeguard(element) {
+    const toggle = element.querySelector('.absolute');
+    const isEnabled = element.classList.contains('safeguard-enabled');
+    
+    if (isEnabled) {
+        element.classList.remove('safeguard-enabled');
+        element.classList.add('safeguard-disabled');
+        toggle.classList.remove('right-0.5');
+        toggle.classList.add('left-0.5');
+        showNotification('SafeGuard disabled', 'warning');
+    } else {
+        element.classList.remove('safeguard-disabled');
+        element.classList.add('safeguard-enabled');
+        toggle.classList.remove('left-0.5');
+        toggle.classList.add('right-0.5');
+        showNotification('SafeGuard enabled', 'success');
+    }
+}
+
+function configureContentFilter() {
+    showNotification('Content filter configuration coming soon!', 'info');
+}
+
+function configurePrivacy() {
+    showNotification('Privacy settings panel coming soon!', 'info');
+}
+
+function configureRateLimit() {
+    showNotification('Rate limiting configuration coming soon!', 'info');
+}
+
+function configureIPWhitelist() {
+    showNotification('IP whitelist setup coming soon!', 'info');
+}
+
+function configureRotation() {
+    showNotification('Key rotation settings coming soon!', 'info');
+}
+
+function viewAuditLogs() {
+    showNotification('Audit log viewer coming soon!', 'info');
+}
+
+function configureGDPR() {
+    showNotification('GDPR compliance panel coming soon!', 'info');
+}
+</script>
+{% endblock %}
